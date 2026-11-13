@@ -1,0 +1,12 @@
+# Local pipeline (alignment + RAAMAC evaluation)
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.2
+trimesh>=4.0
+ifcopenshell>=0.7
+av>=12.0
+Pillow>=10.0
+
+# Reconstruction runs on Colab; remote scripts auto-install these on the VM:
+#   torch, einops, roma, huggingface_hub, safetensors, opencv-python-headless
+# Colab CLI (GPU orchestration) is installed separately, see README.md.

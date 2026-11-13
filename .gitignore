@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated reconstruction artifacts (frames, point clouds, run outputs)
+video_cloud_research/artifacts/
+
+# Heavy raw data — download separately (see README.md / download_data.sh)
+data/schependomlaan/raw/*
+!data/schependomlaan/raw/.gitkeep
+
+# Model weights (auto-downloaded from Hugging Face on Colab)
+*.safetensors
+*.pth
+*.ckpt
+
+# Logs / scratch
+*.log
+.DS_Store

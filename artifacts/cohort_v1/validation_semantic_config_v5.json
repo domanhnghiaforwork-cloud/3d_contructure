@@ -1,0 +1,98 @@
+{
+  "config": {
+    "groups": {
+      "exterior": {
+        "partial": 0.15,
+        "built": 0.4
+      },
+      "interior": {
+        "partial": 0.15,
+        "built": 0.15
+      },
+      "roof": {
+        "partial": 0.3,
+        "built": 0.4
+      },
+      "struct": {
+        "partial": 0.2,
+        "built": 0.4
+      },
+      "top": {
+        "partial": 0.05,
+        "built": 0.4
+      }
+    },
+    "cavity": {
+      "host_built_threshold": 0.2,
+      "yellow_fraction": 0.5
+    }
+  },
+  "report": {
+    "purpose": "Validation-only per-group threshold tuning; test cohort never read",
+    "groups": {
+      "cavity": {
+        "n_validation": 3,
+        "chosen": {
+          "host_built_threshold": 0.2,
+          "yellow_fraction": 0.5
+        },
+        "subset_accuracy": 0.6666666666666666,
+        "subset_macro_f1": 0.4
+      },
+      "exterior": {
+        "n_validation": 21,
+        "chosen": {
+          "partial": 0.15,
+          "built": 0.4
+        },
+        "subset_accuracy": 0.9047619047619048,
+        "subset_macro_f1": 0.8809523809523809
+      },
+      "interior": {
+        "n_validation": 7,
+        "chosen": {
+          "partial": 0.15,
+          "built": 0.15
+        },
+        "subset_accuracy": 1.0,
+        "subset_macro_f1": 1.0
+      },
+      "roof": {
+        "n_validation": 6,
+        "chosen": {
+          "partial": 0.3,
+          "built": 0.4
+        },
+        "subset_accuracy": 1.0,
+        "subset_macro_f1": 1.0
+      },
+      "struct": {
+        "n_validation": 4,
+        "chosen": {
+          "partial": 0.2,
+          "built": 0.4
+        },
+        "subset_accuracy": 1.0,
+        "subset_macro_f1": 1.0
+      },
+      "top": {
+        "n_validation": 3,
+        "chosen": {
+          "partial": 0.05,
+          "built": 0.4
+        },
+        "subset_accuracy": 1.0,
+        "subset_macro_f1": 1.0
+      }
+    },
+    "validation_accuracy": 0.9318181818181818,
+    "validation_macro_f1": 0.9051287695355491,
+    "confusion": {
+      "built->built": 10,
+      "built->not_built": 2,
+      "partial->partial": 3,
+      "partial->not_built": 1,
+      "not_built->not_built": 28
+    }
+  }
+}
