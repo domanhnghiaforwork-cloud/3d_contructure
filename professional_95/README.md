@@ -73,14 +73,12 @@ data/week26_alignment/inspection_samples.npz --output <dir>` với tham số ghi
 `data/week26_registration_v3/registration.json` (scales, flip_z, source_bounds,
 normal_frame, yaw_steps, z_offsets).
 
-## Dữ liệu nặng khi clone từ git
+## Dữ liệu nặng (raw)
 
-`data/raw/week26.ply` + `data/raw/model.ifc` có sẵn khi làm việc cục bộ, nhưng bị
-`.gitignore` trong repo (giữ repo nhẹ). Sau khi clone, chạy:
-
-```bash
-bash download_data.sh      # clone nguồn công khai openBIMstandards/Archive-DataSetSchependomlaan
-```
+`data/raw/week26.ply` (~74MB) + `data/raw/model.ifc` (~49MB) **ĐÃ được commit trong
+repo** (theo yêu cầu), nên package tự chứa hoàn toàn ngay sau khi clone — không cần
+tải thêm. `download_data.sh` chỉ dùng khi muốn tải lại / cập nhật raw từ nguồn công
+khai chính thức `github.com/openBIMstandards/Archive-DataSetSchependomlaan`.
 
 ## Ghi chú trung thực
 
