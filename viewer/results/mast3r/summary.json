@@ -1,22 +1,30 @@
 {
  "validation": {
-  "accuracy": 0.6363636363636364,
-  "n_correct": 28,
+  "accuracy": 0.6590909090909091,
+  "n_correct": 29,
   "n_samples": 44,
-  "macro_f1": 0.30842490842490844,
+  "macro_f1": 0.314192849404117,
   "wilson95": [
-   0.4886637687904344,
-   0.762164702911798
-  ]
+   0.5113914121793823,
+   0.7812418048065555
+  ],
+  "majority_baseline_accuracy": 0.6363636363636364,
+  "beats_majority_baseline": true,
+  "built_recall": 0.08333333333333333,
+  "partial_recall": 0.0
  },
  "test": {
   "accuracy": 0.6666666666666666,
   "n_correct": 14,
   "n_samples": 21,
-  "macro_f1": 0.2916666666666667,
+  "macro_f1": 0.2745098039215686,
   "wilson95": [
    0.4537345197425524,
    0.8280524739491653
-  ]
+  ],
+  "majority_baseline_accuracy": 0.6666666666666666,
+  "beats_majority_baseline": false,
+  "built_recall": 0.0,
+  "partial_recall": 0.0
  }
 }

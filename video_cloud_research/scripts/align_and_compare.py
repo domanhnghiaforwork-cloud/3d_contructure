@@ -74,6 +74,10 @@ def main():
     ap.add_argument("--ref-attributes", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--icp-iters", type=int, default=60)
+    ap.add_argument("--rigid", action="store_true",
+                    help="khóa scale=1 (cloud metric như MASt3R đã đúng scale thật)")
+    ap.add_argument("--scale-search", action="store_true",
+                    help="thử nhiều scale khởi tạo (cloud non-metric một phần như DUSt3R)")
     args = ap.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(42)
@@ -139,17 +143,20 @@ def main():
 
     cr, vr, wr = pca_frame(ref_core)
     cc, vc, wc = pca_frame(rec_core)
-    s0 = float(np.sqrt(wr.sum() / wc.sum()))
+    s_base = 1.0 if args.rigid else float(np.sqrt(wr.sum() / wc.sum()))
     tree_ref = cKDTree(ref_core)
+    factors = [1.0] if (args.rigid or not args.scale_search) else [0.4, 0.6, 0.8, 1.0, 1.2, 1.5]
     best = None
-    for q in signed_permutations():
-        r = vr @ q @ vc.T
-        t = cr - s0 * (r @ cc)
-        d, _ = tree_ref.query(s0 * (rec_core @ r.T) + t, workers=4)
-        score = float(np.mean(np.minimum(d, 2.0)))
-        if best is None or score < best[0]:
-            best = (score, r, t)
-    _, r0, t0 = best
+    for f in factors:
+        s0 = s_base * f
+        for q in signed_permutations():
+            r = vr @ q @ vc.T
+            t = cr - s0 * (r @ cc)
+            d, _ = tree_ref.query(s0 * (rec_core @ r.T) + t, workers=4)
+            score = float(np.mean(np.minimum(d, 2.0)))
+            if best is None or score < best[0]:
+                best = (score, s0, r, t)
+    _, s0, r0, t0 = best
     print(f"coarse score={best[0]:.3f} m scale0={s0:.4f}", flush=True)
 
     cur = s0 * (rec_core @ r0.T) + t0
@@ -164,7 +171,11 @@ def main():
         else:
             keep = d < np.quantile(d, 0.9)
             s2, r2, t2 = umeyama(cur[keep], ref_core[idx[keep]])
-            s2 = float(np.clip(s2, 0.9, 1.1))
+            if args.rigid:
+                s2 = 1.0
+                t2 = ref_core[idx[keep]].mean(axis=0) - r2 @ cur[keep].mean(axis=0)
+            else:
+                s2 = float(np.clip(s2, 0.9, 1.1))
         cur = apply_sim(cur, s2, r2, t2)
         scale, r, t = s2 * scale, r2 @ r, s2 * (r2 @ t) + t2
         if it >= 15 and abs(s2 - 1) < 1e-5 and np.linalg.norm(t2) < 1e-4:

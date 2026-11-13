@@ -369,3 +369,51 @@ KẾT LUẬN TRUNG THỰC:
   chạy thông suốt (dựng GPU → căn chỉnh → normals → đánh giá → báo cáo), tự
   quản lý session (stop khi xong/lỗi), chỉ dùng URL chính thức. Tái tạo đúng
   kết quả ~60%. Không còn session nào chạy.
+
+## 2026-11-13 (tiếp) — ĐÍNH CHÍNH QUAN TRỌNG: lỗi căn chỉnh + accuracy = baseline đa số
+
+Người dùng xem viewer 3D và phản hồi: cloud dựng lại **hoàn toàn không khớp IFC,
+bị xoay/phóng sai hướng**. Kiểm tra lại phát hiện HAI vấn đề, đều đã sửa:
+
+### 1) Lỗi căn chỉnh (align_and_compare.py)
+- Nguyên nhân: bước khởi tạo scale dùng tỉ số phương sai PCA `sqrt(wr.sum()/wc.sum())`
+  giữa cloud tham chiếu ĐẦY ĐỦ và cloud dựng lại MỘT PHẦN. Với cloud metric MASt3R
+  (đã đúng scale thật), tỉ số này phóng cloud lên **3.256×** → cloud xoay/phóng sai,
+  không khớp IFC. Đây là lỗi ước lượng scale partial-to-full, không phải lỗi viewer.
+- Sửa: thêm cờ `--rigid` (khóa scale=1, dùng cho cloud metric như MASt3R) và
+  `--scale-search` (thử nhiều scale khởi tạo 0.4–1.5× cho cloud non-metric một phần
+  như DUSt3R, chọn scale minimize khoảng cách tới lõi tham chiếu). ICP nhánh rigid
+  giữ scale=1; nhánh scale-search vẫn clip 0.9–1.1 mỗi vòng.
+- Kết quả overlap với cloud chuyên nghiệp (coverage_recon@0.2):
+  - MASt3R rigid: **47.6% → 78.3%** (scale khóa 1.0).
+  - DUSt3R scale-search: **29.1% → 45.1%** (scale ~16.477; vẫn hạn chế do shear
+    của cloud non-metric một phần).
+- Sinh lại `data_dust3r.js` / `data_mast3r.js` bằng cloud đã căn đúng → viewer khớp
+  IFC hơn. (Cloud video vẫn thưa/rỗng ở phần tử built — hạn chế dữ liệu nguồn.)
+
+### 2) Accuracy 61.9%/66.7% THỰC CHẤT = baseline đoán not_built hàng loạt
+- Đọc kỹ `metrics_test.json` (per-class + confusion_matrix + beats_majority_baseline):
+  - Nhãn test: built 6, partial 1, not_built 14 → **baseline đa số = 14/21 = 66.7%**.
+  - DUSt3R: test 13/21=61.9%, **built recall 0/6, partial recall 0/1**, not_built
+    recall 13/14; `beats_majority_baseline = false` (DƯỚI baseline).
+  - MASt3R: test 14/21=66.7%, **built recall 0/6, partial recall 0/1**, not_built
+    recall 14/14; `beats_majority_baseline = false` (BẰNG baseline). Confusion gần
+    như toàn bộ dự đoán not_built.
+- ⇒ Cách trình bày cũ "đạt mốc 50✓ 60✓" là **GÂY HIỂU LẦM**: accuracy cao chỉ vì
+  đoán gần như tất cả là not_built (lớp đa số), KHÔNG phải nhận diện tiến độ.
+  Pipeline video **không phát hiện đúng phần tử built nào**.
+
+### Kết luận trung thực cuối cùng
+- Mục tiêu RAAMAC ≥80% **chỉ đạt với cloud chuyên nghiệp** `week26.ply`:
+  test 95.24% (20/21), built recall 5/6, partial 1/1, beats_majority = true.
+- Cloud **chỉ từ video** (một quỹ đạo drone nén, nhà trắng ít texture) trên bộ
+  Schependomlaan: **CHƯA thực sự phát hiện tiến độ** — built recall 0/6, accuracy
+  bằng/dưới baseline not_built. Nút thắt là chất lượng dữ liệu nguồn, không phải
+  pipeline đánh giá (pipeline đánh giá đóng băng vẫn đúng, chính nó đã vạch ra
+  beats_majority=false).
+- Đã đính chính: `README.md` (bảng per-class + kết luận + ghi chú đính chính),
+  `viewer/index.html` (bảng Test acc/Built recall/Partial recall/Thắng baseline +
+  note trung thực), sinh lại viewer data với căn chỉnh đúng. KHÔNG tune trên test,
+  KHÔNG loại dự đoán thiếu để thổi accuracy.
+- Hướng đi thật sự để đạt ≥80% từ video: dữ liệu nguồn tốt hơn (đa quỹ đạo/đa góc,
+  độ phân giải cao, bề mặt có texture) hoặc reconstruction chuyên nghiệp.

@@ -71,19 +71,27 @@ def main():
              "--labels", labels, "--predictions", sub,
              "--split", split, "--output", args.out_dir / f"metrics_{split}.json"])
         m = json.loads((args.out_dir / f"metrics_{split}.json").read_text())
+        pc = m.get("per_class", {})
         summary[split] = {
             "accuracy": m["accuracy"], "n_correct": m["n_correct"],
             "n_samples": m["n_samples"], "macro_f1": m["macro_f1"],
             "wilson95": m["accuracy_wilson_95_interval"],
+            "majority_baseline_accuracy": m.get("majority_baseline_accuracy"),
+            "beats_majority_baseline": m.get("beats_majority_baseline"),
+            "built_recall": pc.get("built", {}).get("recall"),
+            "partial_recall": pc.get("partial", {}).get("recall"),
         }
 
-    print("\n===== KẾT QUẢ CLOUD DỰNG LẠI TỪ VIDEO =====", flush=True)
+    print("\n===== KẾT QUẢ CLOUD DỰNG LẠI TỪ VIDEO (trung thực) =====", flush=True)
     for split, s in summary.items():
         print(f"{split}: {s['n_correct']}/{s['n_samples']} = {s['accuracy']:.4f} "
-              f"macroF1={s['macro_f1']:.4f} wilson={s['wilson95']}", flush=True)
-    acc = summary["test"]["accuracy"]
-    for milestone in (0.5, 0.6, 0.7, 0.8):
-        print(f"moc {milestone:.0%}: {'DAT' if acc >= milestone else 'chua dat'}", flush=True)
+              f"macroF1={s['macro_f1']:.4f}", flush=True)
+        print(f"   built recall={s['built_recall']}  partial recall={s['partial_recall']}  "
+              f"baseline đa số={s['majority_baseline_accuracy']}  "
+              f"thắng baseline={s['beats_majority_baseline']}", flush=True)
+    if not summary["test"]["beats_majority_baseline"]:
+        print("LƯU Ý: accuracy bằng/dưới baseline đoán not_built hàng loạt — "
+              "CHƯA thực sự phát hiện tiến độ (built recall 0).", flush=True)
     (args.out_dir / "summary.json").write_text(json.dumps(summary, indent=1))
 
 

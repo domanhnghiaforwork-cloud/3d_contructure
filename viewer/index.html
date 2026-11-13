@@ -47,22 +47,24 @@ code{background:#0e1830;padding:2px 6px;border-radius:5px;font-size:.88em}
 
 <h3>Kết quả RAAMAC (cohort test đóng băng, 21 phần tử)</h3>
 <table>
-<tr><th>Nguồn cloud</th><th>Test</th><th>50%</th><th>60%</th><th>70%</th><th>80%</th></tr>
-<tr><td>Chuyên nghiệp week26.ply</td><td>95.24% (20/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="ok">đạt</td></tr>
-<tr><td>Video → DUSt3R</td><td>61.9% (13/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="no">chưa</td><td class="no">chưa</td></tr>
-<tr><td>Video → MASt3R metric</td><td>66.7% (14/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="no">chưa</td><td class="no">chưa</td></tr>
+<tr><th>Nguồn cloud</th><th>Test acc</th><th>Built recall</th><th>Partial recall</th><th>Thắng baseline đa số (66.7%)?</th></tr>
+<tr><td>Chuyên nghiệp week26.ply</td><td>95.24% (20/21)</td><td class="ok">5/6</td><td class="ok">1/1</td><td class="ok">có</td></tr>
+<tr><td>Video → DUSt3R</td><td>61.9% (13/21)</td><td class="no">0/6</td><td class="no">0/1</td><td class="no">không (dưới)</td></tr>
+<tr><td>Video → MASt3R metric</td><td>66.7% (14/21)</td><td class="no">0/6</td><td class="no">0/1</td><td class="no">không (bằng)</td></tr>
 </table>
 
 <div class="note">
 <strong>Cách xem:</strong> bấm một thẻ ở trên để mở viewer 3D (tự chứa, không cần internet).
 Kéo chuột để xoay, lăn để phóng to; bật/tắt lớp cloud video và BIM theo trạng thái
-(built / partial / not_built / unobserved).<br><br>
-<strong>Nguồn dữ liệu:</strong> cả hai kịch bản cùng dựng từ một video
-<code>week26.mp4</code> (55s, 25fps, 1920×1080, drone bay một vòng) thuộc bộ
-Schependomlaan công khai. Cloud chuyên nghiệp <code>week26.ply</code> làm tham chiếu.
-Kết quả video-only bị giới hạn bởi dữ liệu nguồn (một quỹ đạo, nhà trắng ít texture,
-video nén) — chưa đạt 80%. Xem <code>README.md</code> và
-<code>video_cloud_research/research_log.md</code> để biết chi tiết.
+(built / partial / not_built / unobserved). Cloud video đã căn chỉnh lại cho khớp IFC
+(MASt3R căn cứng scale=1, overlap cloud chuyên nghiệp 78%; DUSt3R tìm kiếm đa scale, 45%).<br><br>
+<strong>Kết luận trung thực:</strong> cả hai pipeline video <strong>không phát hiện đúng
+phần tử built nào (recall 0/6)</strong>; accuracy 61.9%/66.7% chỉ bằng hoặc dưới baseline
+đoán <code>not_built</code> hàng loạt (66.7%, do 14/21 nhãn test là not_built) —
+<strong>không thắng baseline</strong>. Chỉ cloud chuyên nghiệp week26.ply đạt 95.24%
+(built recall 5/6) thực sự phát hiện tiến độ. Nguồn: cùng một video <code>week26.mp4</code>
+(55s, drone một vòng, nhà trắng ít texture, video nén) thuộc bộ Schependomlaan công khai.
+Xem <code>README.md</code> và <code>video_cloud_research/research_log.md</code>.
 </div>
 </div>
 </body>

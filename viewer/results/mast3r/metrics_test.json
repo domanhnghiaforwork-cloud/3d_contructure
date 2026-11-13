@@ -1,8 +1,8 @@
 {
-  "evaluated_at_utc": "2026-11-13T01:02:40.050529+00:00",
+  "evaluated_at_utc": "2026-11-13T04:54:42.144875+00:00",
   "split": "test",
   "reference_sha256": "6cdde870dde51151c700743731b5131a58042dba61a8c0b68275c441cc77eb9d",
-  "predictions_sha256": "3e9ad20e9dc5febda67748c71cf82d11f43efbeacc31786de6414caf3b42c84b",
+  "predictions_sha256": "d0922750a8db156658478e9c892e6caea274013ed110213716ffc65894edb4a7",
   "label_sources": [
     "agent_visual_annotation_registered_scan_rgb_plus_dated_drone_video_week26_v1"
   ],
@@ -14,7 +14,7 @@
     0.8280524739491653
   ],
   "interval_caveat": "Binomial interval; does not account for correlated elements within a site or scan.",
-  "macro_f1": 0.2916666666666667,
+  "macro_f1": 0.2745098039215686,
   "majority_class": "not_built",
   "majority_baseline_accuracy": 0.6666666666666666,
   "beats_majority_baseline": false,
@@ -37,9 +37,9 @@
       "support": 1.0
     },
     "not_built": {
-      "precision": 0.7777777777777778,
+      "precision": 0.7,
       "recall": 1.0,
-      "f1-score": 0.875,
+      "f1-score": 0.8235294117647058,
       "support": 14.0
     }
   },
@@ -52,14 +52,14 @@
   "confusion_matrix": [
     [
       0,
-      2,
-      4,
+      1,
+      5,
       0
     ],
     [
+      0,
+      0,
       1,
-      0,
-      0,
       0
     ],
     [

@@ -1,6 +1,7 @@
 """Pipeline TỰ ĐỘNG một lệnh end-to-end: video/frame -> dựng 3D (Colab GPU)
--> căn chỉnh vào cloud tham chiếu -> ước lượng normals -> đánh giá RAAMAC
-trên cohort đóng băng -> báo cáo mốc 50/60/70/80.
+-> căn chỉnh vào cloud tham chiếu (rigid scale=1 cho MASt3R metric, scale-search
+cho DUSt3R non-metric) -> ước lượng normals -> đánh giá RAAMAC trên cohort đóng
+băng -> báo cáo trung thực per-class + baseline đa số (beats_majority_baseline).
 
 Một lệnh duy nhất điều phối toàn bộ; khâu dựng tự quản lý session Colab
 (new->upload->run->download->STOP). --skip-remote dùng fused.ply đã có để
@@ -63,28 +64,32 @@ def main():
     norm_dir = args.out_dir / "alignment_ref_normals"
     eval_dir = args.out_dir / "eval"
 
-    run([PY, SCRIPTS / "align_and_compare.py",
-         "--recon", fused, "--ref-attributes", REF_ATTRS,
-         "--out-dir", align_dir])
+    align_cmd = [PY, SCRIPTS / "align_and_compare.py",
+                 "--recon", fused, "--ref-attributes", REF_ATTRS,
+                 "--out-dir", align_dir]
+    align_cmd.append("--rigid" if args.backend == "mast3r" else "--scale-search")
+    run(align_cmd)
     run([PY, SCRIPTS / "estimate_normals.py",
          "--aligned-dir", align_dir, "--out-dir", norm_dir])
     run([PY, SCRIPTS / "evaluate_raamac.py",
          "--aligned-dir", norm_dir, "--out-dir", eval_dir])
 
     summary = json.loads((eval_dir / "summary.json").read_text())
-    acc = summary["test"]["accuracy"]
+    t = summary["test"]
     report = {
         "backend": args.backend, "skip_remote": args.skip_remote,
-        "test": summary["test"], "validation": summary["validation"],
-        "milestones": {f"{int(m*100)}%": bool(acc >= m) for m in (0.5, 0.6, 0.7, 0.8)},
+        "test": t, "validation": summary["validation"],
     }
     (args.out_dir / "pipeline_report.json").write_text(json.dumps(report, indent=1))
-    print("\n===== PIPELINE TỰ ĐỘNG: KẾT QUẢ =====", flush=True)
-    print(f"backend={args.backend}  test={summary['test']['n_correct']}/"
-          f"{summary['test']['n_samples']}={acc:.4f}  "
-          f"val={summary['validation']['accuracy']:.4f}", flush=True)
-    for m in (0.5, 0.6, 0.7, 0.8):
-        print(f"moc {m:.0%}: {'DAT' if acc >= m else 'chua dat'}", flush=True)
+    print("\n===== PIPELINE TỰ ĐỘNG: KẾT QUẢ (trung thực) =====", flush=True)
+    print(f"backend={args.backend}  test={t['n_correct']}/{t['n_samples']}="
+          f"{t['accuracy']:.4f}  val={summary['validation']['accuracy']:.4f}", flush=True)
+    print(f"built recall={t.get('built_recall')}  partial recall={t.get('partial_recall')}  "
+          f"baseline đa số={t.get('majority_baseline_accuracy')}  "
+          f"thắng baseline={t.get('beats_majority_baseline')}", flush=True)
+    if not t.get("beats_majority_baseline"):
+        print("LƯU Ý: accuracy bằng/dưới baseline đoán not_built hàng loạt — "
+              "CHƯA thực sự phát hiện tiến độ (built recall 0).", flush=True)
     print("report ->", args.out_dir / "pipeline_report.json", flush=True)
 
 

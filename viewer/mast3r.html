@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Video → MASt3R · Tuần 26 — RAAMAC 66.7%</title>
+<title>Video → MASt3R · Tuần 26 — test 66.7% (= baseline, built 0/6)</title>
 <style>
 :root{
   --bg:#0b1220; --bg2:#101b33; --surface:#121c30; --surface2:#16233c; --line:#223452;
@@ -166,8 +166,9 @@ select:focus, input[type=text]:focus{border-color:var(--cyan)}
     <p>Point cloud drone đã đăng ký (RGB thật) × bề mặt IFC tô màu theo dự đoán v5 · click cấu kiện để xem coverage &amp; nhãn</p>
   </div>
   <div class="chips">
-    <span class="chip acc" title="Accuracy trên test đóng băng 21 cấu kiện, nhãn độc lập">TEST <b>95.24%</b></span>
-    <span class="chip hideS" title="Macro-F1 trên test đóng băng">F1 <b>0.958</b></span>
+    <span class="chip" style="border-color:#6b5a2b;background:rgba(255,180,84,.12);color:#ffd9a0" title="Accuracy test đóng băng 21 cấu kiện. CẢNH BÁO: chỉ BẰNG baseline đoán not_built hàng loạt (66.7%); built recall 0/6 — chưa thực sự phát hiện tiến độ.">TEST <b style="color:#ffd9a0">66.7%</b></span>
+    <span class="chip hideS" title="Macro-F1 test đóng băng — thấp vì không nhận diện được built/partial">F1 <b>0.275</b></span>
+    <span class="chip hideS" style="border-color:#6b3a2b;background:rgba(255,120,84,.14);color:#ffc9b0" title="Không phát hiện đúng phần tử built nào (0/6); accuracy bằng baseline đa số not_built, không thắng baseline">built <b>0/6</b> · = baseline</span>
     <span class="chip hideS" id="chipCount">—</span>
     <button class="btn" id="exportBtn" title="Xuất ảnh PNG khung nhìn hiện tại">Xuất PNG</button>
   </div>

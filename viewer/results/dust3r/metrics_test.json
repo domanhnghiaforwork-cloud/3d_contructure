@@ -1,8 +1,8 @@
 {
-  "evaluated_at_utc": "2026-11-13T02:06:15.403021+00:00",
+  "evaluated_at_utc": "2026-11-13T04:56:39.990448+00:00",
   "split": "test",
   "reference_sha256": "6cdde870dde51151c700743731b5131a58042dba61a8c0b68275c441cc77eb9d",
-  "predictions_sha256": "80d06b973ab6b6e0ac7a68c8a07f014f2851d147cff980a2ea93b398bfcbfd10",
+  "predictions_sha256": "5ee0b7e9b3fb35071b81e762183de1320533ad9e02ee5327c2b335a8ffbe89e9",
   "label_sources": [
     "agent_visual_annotation_registered_scan_rgb_plus_dated_drone_video_week26_v1"
   ],
@@ -14,7 +14,7 @@
     0.7924898863143551
   ],
   "interval_caveat": "Binomial interval; does not account for correlated elements within a site or scan.",
-  "macro_f1": 0.43333333333333335,
+  "macro_f1": 0.2626262626262626,
   "majority_class": "not_built",
   "majority_baseline_accuracy": 0.6666666666666666,
   "beats_majority_baseline": false,
@@ -31,15 +31,15 @@
       "support": 6.0
     },
     "partial": {
-      "precision": 0.3333333333333333,
-      "recall": 1.0,
-      "f1-score": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
       "support": 1.0
     },
     "not_built": {
-      "precision": 0.75,
-      "recall": 0.8571428571428571,
-      "f1-score": 0.8,
+      "precision": 0.6842105263157895,
+      "recall": 0.9285714285714286,
+      "f1-score": 0.7878787878787878,
       "support": 14.0
     }
   },
@@ -52,20 +52,20 @@
   "confusion_matrix": [
     [
       0,
-      2,
-      4,
+      1,
+      5,
       0
     ],
     [
+      0,
       0,
       1,
-      0,
       0
     ],
     [
-      2,
+      1,
       0,
-      12,
+      13,
       0
     ],
     [
