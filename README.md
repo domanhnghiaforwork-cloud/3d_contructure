@@ -34,6 +34,8 @@ texture, video nén) khiến cloud dựng lại thiếu/rỗng ở các phần t
 Thư mục `viewer/` chứa viewer 3D **tự chứa** (không cần internet/CDN) để xem cloud
 video dựng lại đối chiếu BIM:
 - `viewer/index.html` — trang chọn kịch bản + bảng kết quả trung thực (per-class).
+- `viewer/professional/` — **thư mục riêng** viewer cloud chuyên nghiệp:
+  `viewer_3d.html` + `viewer_data.js` (week26.ply đã đăng ký IFC, test 95.24%, built 5/6).
 - `viewer/dust3r.html` + `data_dust3r.js` — DUSt3R khử nhiễu (test 66.7%, built recall 0/6).
 - `viewer/mast3r.html` + `data_mast3r.js` — MASt3R metric (test 66.7%, built recall 0/6).
 - `viewer/results/` — summary + metrics JSON từng kịch bản (gồm `beats_majority_baseline`,
