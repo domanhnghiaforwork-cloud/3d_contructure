@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Viewer 3D — Pipeline Video → BIM · Tuần 26</title>
+<style>
+:root{--bg:#0b1220;--surface:#121c30;--line:#223452;--text:#e8eef7;--muted:#93a4bd;--cyan:#35c4ff;--green:#3ddc84;--amber:#ffb454}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:40px 20px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 28px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;text-decoration:none;color:var(--text);transition:border-color .15s}
+.card:hover{border-color:var(--cyan)}
+.card h2{margin:0 0 6px;font-size:1.15rem}
+.acc{font-size:2rem;font-weight:700;color:var(--cyan)}
+.card.mast3r .acc{color:var(--green)}
+.meta{color:var(--muted);font-size:.9rem;margin-top:8px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+th{background:var(--surface)}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;color:var(--muted);font-size:.92rem;margin-top:24px}
+.ok{color:var(--green)} .no{color:var(--amber)}
+code{background:#0e1830;padding:2px 6px;border-radius:5px;font-size:.88em}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Viewer 3D — Pipeline Video → BIM</h1>
+<p class="sub">Công trình Schependomlaan · Tuần 26 · cloud dựng lại từ video drone đối chiếu BIM (IFC)</p>
+
+<div class="cards">
+  <a class="card" href="dust3r.html">
+    <h2>DUSt3R</h2>
+    <div class="acc">61.9%</div>
+    <div class="meta">13/21 phần tử test · 113 frame @384px · logwin<br>Mở viewer 3D →</div>
+  </a>
+  <a class="card mast3r" href="mast3r.html">
+    <h2>MASt3R metric</h2>
+    <div class="acc">66.7%</div>
+    <div class="meta">14/21 phần tử test · 57 frame @256px · logwin<br>Mở viewer 3D →</div>
+  </a>
+</div>
+
+<h3>Kết quả RAAMAC (cohort test đóng băng, 21 phần tử)</h3>
+<table>
+<tr><th>Nguồn cloud</th><th>Test</th><th>50%</th><th>60%</th><th>70%</th><th>80%</th></tr>
+<tr><td>Chuyên nghiệp week26.ply</td><td>95.24% (20/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="ok">đạt</td></tr>
+<tr><td>Video → DUSt3R</td><td>61.9% (13/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="no">chưa</td><td class="no">chưa</td></tr>
+<tr><td>Video → MASt3R metric</td><td>66.7% (14/21)</td><td class="ok">đạt</td><td class="ok">đạt</td><td class="no">chưa</td><td class="no">chưa</td></tr>
+</table>
+
+<div class="note">
+<strong>Cách xem:</strong> bấm một thẻ ở trên để mở viewer 3D (tự chứa, không cần internet).
+Kéo chuột để xoay, lăn để phóng to; bật/tắt lớp cloud video và BIM theo trạng thái
+(built / partial / not_built / unobserved).<br><br>
+<strong>Nguồn dữ liệu:</strong> cả hai kịch bản cùng dựng từ một video
+<code>week26.mp4</code> (55s, 25fps, 1920×1080, drone bay một vòng) thuộc bộ
+Schependomlaan công khai. Cloud chuyên nghiệp <code>week26.ply</code> làm tham chiếu.
+Kết quả video-only bị giới hạn bởi dữ liệu nguồn (một quỹ đạo, nhà trắng ít texture,
+video nén) — chưa đạt 80%. Xem <code>README.md</code> và
+<code>video_cloud_research/research_log.md</code> để biết chi tiết.
+</div>
+</div>
+</body>
+</html>

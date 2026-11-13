@@ -1,0 +1,82 @@
+{
+  "evaluated_at_utc": "2026-11-13T01:02:40.050529+00:00",
+  "split": "test",
+  "reference_sha256": "6cdde870dde51151c700743731b5131a58042dba61a8c0b68275c441cc77eb9d",
+  "predictions_sha256": "3e9ad20e9dc5febda67748c71cf82d11f43efbeacc31786de6414caf3b42c84b",
+  "label_sources": [
+    "agent_visual_annotation_registered_scan_rgb_plus_dated_drone_video_week26_v1"
+  ],
+  "n_samples": 21,
+  "n_correct": 14,
+  "accuracy": 0.6666666666666666,
+  "accuracy_wilson_95_interval": [
+    0.4537345197425524,
+    0.8280524739491653
+  ],
+  "interval_caveat": "Binomial interval; does not account for correlated elements within a site or scan.",
+  "macro_f1": 0.2916666666666667,
+  "majority_class": "not_built",
+  "majority_baseline_accuracy": 0.6666666666666666,
+  "beats_majority_baseline": false,
+  "class_support": {
+    "built": 6,
+    "partial": 1,
+    "not_built": 14
+  },
+  "per_class": {
+    "built": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 6.0
+    },
+    "partial": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1.0
+    },
+    "not_built": {
+      "precision": 0.7777777777777778,
+      "recall": 1.0,
+      "f1-score": 0.875,
+      "support": 14.0
+    }
+  },
+  "confusion_labels": [
+    "built",
+    "partial",
+    "not_built",
+    "unobserved"
+  ],
+  "confusion_matrix": [
+    [
+      0,
+      2,
+      4,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "n_unobserved": 0,
+  "all_three_reference_classes_present": true,
+  "meets_numeric_threshold": false,
+  "qualification_caveat": "Numeric threshold alone is not project completion; independent real-world labels and a locked test protocol must be verified separately."
+}

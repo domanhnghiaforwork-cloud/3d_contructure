@@ -18,6 +18,20 @@ phương pháp RAAMAC trên cohort nhãn độc lập đã đóng băng.
 ít texture, video nén), không phải pipeline đánh giá. Xem
 `video_cloud_research/research_log.md` để biết chi tiết thí nghiệm.
 
+## Viewer 3D (xem kết quả dựng lại)
+
+Thư mục `viewer/` chứa viewer 3D **tự chứa** (không cần internet/CDN) để xem cloud
+video dựng lại đối chiếu BIM:
+- `viewer/index.html` — trang chọn kịch bản + bảng kết quả.
+- `viewer/dust3r.html` + `data_dust3r.js` — DUSt3R 61.9%.
+- `viewer/mast3r.html` + `data_mast3r.js` — MASt3R metric 66.7%.
+- `viewer/results/` — summary + metrics JSON từng kịch bản.
+
+Mở `viewer/index.html` trong trình duyệt sau khi clone. Kéo chuột để xoay, lăn để
+phóng to; bật/tắt lớp cloud video và BIM theo trạng thái (built/partial/not_built/
+unobserved). Dữ liệu viewer sinh bởi `build_viewer_video.py` (cloud video khung ref
+→ áp G3 ref→IFC → downsampling ~120k điểm + mẫu bề mặt BIM).
+
 ## Cấu trúc repo
 
 ```

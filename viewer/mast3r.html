@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Video → MASt3R · Tuần 26 — RAAMAC 66.7%</title>
+<style>
+:root{
+  --bg:#0b1220; --bg2:#101b33; --surface:#121c30; --surface2:#16233c; --line:#223452;
+  --text:#e8eef7; --muted:#93a4bd; --cyan:#35c4ff; --blue:#1b3a6b;
+  --built:#3ddc84; --partial:#ffb020; --notbuilt:#ff4d5e; --unobs:#7d8aa0;
+  --magenta:#ff3d81; --amber:#ffb020;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%; overflow:hidden}
+body{
+  background:var(--bg); color:var(--text);
+  font:14px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+#gl{position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab}
+#gl.dragging{cursor:grabbing}
+#vignette{position:fixed; inset:0; pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(4,8,18,.55) 100%);}
+/* ---------- top bar ---------- */
+header{
+  position:fixed; top:0; left:0; right:0; height:58px; z-index:30;
+  display:flex; align-items:center; gap:14px; padding:0 16px;
+  background:linear-gradient(180deg, rgba(11,18,32,.96), rgba(11,18,32,.82));
+  border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
+}
+.logo{width:34px; height:34px; flex:0 0 auto; border-radius:9px;
+  background:linear-gradient(135deg, var(--blue), #0e2a52 60%, #123);
+  border:1px solid #2c4a7c; display:grid; place-items:center;
+  box-shadow:0 0 18px rgba(53,196,255,.25);}
+.logo svg{width:20px; height:20px}
+.titles{min-width:0}
+.titles h1{font-size:15px; font-weight:650; letter-spacing:.4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.titles h1 em{font-style:normal; color:var(--cyan)}
+.titles p{font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.chips{display:flex; gap:8px; margin-left:auto; align-items:center; flex-wrap:nowrap}
+.chip{font-size:11px; padding:5px 10px; border-radius:999px; border:1px solid var(--line);
+  background:var(--surface); color:var(--muted); white-space:nowrap}
+.chip b{color:var(--text); font-weight:650}
+.chip.acc{border-color:#2b6b4f; background:rgba(61,220,132,.10); color:#bfe9d2}
+.chip.acc b{color:var(--built)}
+.btn{
+  font:600 12px/1 inherit; color:var(--text); background:var(--surface2);
+  border:1px solid var(--line); border-radius:9px; padding:8px 12px; cursor:pointer;
+  transition:border-color .15s, background .15s, transform .05s;
+}
+.btn:hover{border-color:var(--cyan); background:#1b2b47}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(135deg, #b97708, var(--amber)); color:#241a02; border-color:#d99a1f}
+.btn.primary:hover{filter:brightness(1.08)}
+#menuBtn{display:none}
+/* ---------- sidebar ---------- */
+aside{
+  position:fixed; top:58px; bottom:0; left:0; width:302px; z-index:20;
+  background:linear-gradient(180deg, rgba(18,28,48,.97), rgba(13,20,36,.97));
+  border-right:1px solid var(--line); overflow-y:auto; padding:14px 14px 26px;
+  backdrop-filter:blur(6px);
+}
+aside::-webkit-scrollbar, .card::-webkit-scrollbar{width:9px}
+aside::-webkit-scrollbar-track, .card::-webkit-scrollbar-track{background:#0d1526}
+aside::-webkit-scrollbar-thumb, .card::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg, #2c4a7c, #1b3a6b); border-radius:8px; border:2px solid #0d1526}
+aside::-webkit-scrollbar-thumb:hover, .card::-webkit-scrollbar-thumb:hover{background:var(--cyan)}
+aside, .card{scrollbar-width:thin; scrollbar-color:#2c4a7c #0d1526}
+.sec{margin-bottom:16px}
+.sec h2{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--cyan);
+  margin-bottom:8px; display:flex; align-items:center; gap:7px}
+.sec h2::after{content:""; flex:1; height:1px; background:linear-gradient(90deg, var(--line), transparent)}
+.row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:7px 0}
+.row label{font-size:12px; color:var(--muted)}
+.row output{font-size:11px; color:var(--text); font-variant-numeric:tabular-nums; min-width:38px; text-align:right}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:20px; background:transparent; cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px; border-radius:4px;
+  background:linear-gradient(90deg, var(--blue), #2c4a7c)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:14px; height:14px; margin-top:-5px;
+  border-radius:50%; background:var(--cyan); border:2px solid #0b1220; box-shadow:0 0 8px rgba(53,196,255,.6)}
+input[type=range]::-moz-range-track{height:4px; border-radius:4px; background:#2c4a7c}
+input[type=range]::-moz-range-thumb{width:12px; height:12px; border-radius:50%; background:var(--cyan); border:2px solid #0b1220}
+select, input[type=text]{
+  width:100%; font:12px inherit; color:var(--text); background:var(--surface2);
+  border:1px solid var(--line); border-radius:8px; padding:7px 8px; outline:none;
+}
+select:focus, input[type=text]:focus{border-color:var(--cyan)}
+.toggles{display:grid; grid-template-columns:1fr 1fr; gap:7px}
+.tg{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text);
+  background:var(--surface2); border:1px solid var(--line); border-radius:8px; padding:7px 9px; cursor:pointer;
+  transition:border-color .15s, background .15s}
+.tg:hover{border-color:#33507e}
+.tg input{accent-color:var(--cyan); width:14px; height:14px; cursor:pointer}
+.tg.off{opacity:.55}
+.statusgrid{display:grid; grid-template-columns:1fr 1fr; gap:7px}
+.st{display:flex; align-items:center; gap:7px; font-size:11.5px; padding:7px 9px; border-radius:8px;
+  border:1px solid var(--line); background:var(--surface2); cursor:pointer}
+.st input{width:13px; height:13px; cursor:pointer}
+.st .dot{width:9px; height:9px; border-radius:50%; box-shadow:0 0 8px currentColor}
+.st small{margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums}
+.views{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
+.views .btn{padding:8px 4px; font-size:11px}
+.hintline{font-size:11px; color:var(--muted); margin-top:6px}
+/* ---------- legend / hints ---------- */
+#legend{position:fixed; left:316px; bottom:14px; z-index:15; display:flex; gap:8px; flex-wrap:wrap}
+#legend .chip{background:rgba(18,28,48,.9)}
+#legend .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; box-shadow:0 0 8px currentColor}
+#hints{position:fixed; right:14px; bottom:14px; z-index:15; font-size:11px; color:var(--muted);
+  background:rgba(18,28,48,.85); border:1px solid var(--line); border-radius:9px; padding:7px 11px}
+#hints b{color:var(--text)}
+/* ---------- info card ---------- */
+.card{
+  position:fixed; top:72px; right:14px; width:300px; max-height:calc(100% - 100px); overflow-y:auto; z-index:25;
+  background:linear-gradient(180deg, rgba(22,35,60,.98), rgba(15,24,42,.98));
+  border:1px solid #2c4a7c; border-radius:14px; padding:14px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(53,196,255,.08);
+  display:none;
+}
+.card.open{display:block; animation:pop .18s ease-out}
+@keyframes pop{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
+.card h3{font-size:14px; margin-bottom:2px; padding-right:22px}
+.card .guid{font:11px ui-monospace, Consolas, monospace; color:var(--cyan); word-break:break-all; margin-bottom:10px}
+.card .close{position:absolute; top:10px; right:10px; width:24px; height:24px; border-radius:7px;
+  border:1px solid var(--line); background:var(--surface2); color:var(--muted); cursor:pointer}
+.card .close:hover{color:var(--text); border-color:var(--notbuilt)}
+.kv{display:flex; justify-content:space-between; font-size:12px; margin:5px 0; color:var(--muted)}
+.kv b{color:var(--text); font-weight:600; text-align:right}
+.badge{display:inline-block; font-size:11px; font-weight:650; padding:3px 9px; border-radius:999px; border:1px solid}
+.bar{height:7px; border-radius:5px; background:#0d1526; border:1px solid var(--line); overflow:hidden; margin:6px 0 2px}
+.bar i{display:block; height:100%; background:linear-gradient(90deg, var(--cyan), var(--built)); border-radius:5px}
+.card .actions{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:12px}
+.card .actions .btn{font-size:11px; padding:8px 6px; text-align:center; text-decoration:none; display:block}
+/* ---------- loading ---------- */
+#loading{position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+  background:radial-gradient(80% 60% at 50% 45%, #14243f, var(--bg)); transition:opacity .5s}
+#loading.done{opacity:0; pointer-events:none}
+#loading .box{text-align:center}
+#loading .ring{width:52px; height:52px; margin:0 auto 14px; border-radius:50%;
+  border:3px solid #223452; border-top-color:var(--cyan); animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{color:var(--muted); font-size:12px; letter-spacing:.6px}
+#loading h2{font-size:16px; margin-bottom:6px; letter-spacing:.5px}
+@media (max-width:900px){
+  aside{transform:translateX(-100%); transition:transform .25s; width:290px; box-shadow:20px 0 60px rgba(0,0,0,.5)}
+  aside.open{transform:none}
+  #menuBtn{display:inline-block}
+  #legend{left:14px; bottom:52px}
+  #hints{display:none}
+  #chipCount{display:none}
+  .chips .chip.hideS{display:none}
+  .titles p{display:none}
+  .card{width:min(300px, calc(100% - 28px))}
+}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="vignette"></div>
+
+<header>
+  <button class="btn" id="menuBtn" title="Bảng điều khiển">☰</button>
+  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#35c4ff" stroke-width="1.7">
+    <path d="M12 2 21 7v10l-9 5-3-5V7z"/><path d="M12 22V12M21 7l-9 5-9-5"/></svg></div>
+  <div class="titles">
+    <h1>SCHEPENDOMLAAN · <em>TUẦN 26</em> — ĐỐI CHIẾU TIẾN ĐỘ 3D</h1>
+    <p>Point cloud drone đã đăng ký (RGB thật) × bề mặt IFC tô màu theo dự đoán v5 · click cấu kiện để xem coverage &amp; nhãn</p>
+  </div>
+  <div class="chips">
+    <span class="chip acc" title="Accuracy trên test đóng băng 21 cấu kiện, nhãn độc lập">TEST <b>95.24%</b></span>
+    <span class="chip hideS" title="Macro-F1 trên test đóng băng">F1 <b>0.958</b></span>
+    <span class="chip hideS" id="chipCount">—</span>
+    <button class="btn" id="exportBtn" title="Xuất ảnh PNG khung nhìn hiện tại">Xuất PNG</button>
+  </div>
+</header>
+
+<aside id="panel">
+  <div class="sec">
+    <h2>Lớp hiển thị</h2>
+    <div class="toggles">
+      <label class="tg"><input type="checkbox" id="tgScan" checked> Scan RGB</label>
+      <label class="tg"><input type="checkbox" id="tgBim" checked> Bề mặt IFC</label>
+      <label class="tg"><input type="checkbox" id="tgGrid" checked> Lưới &amp; trục</label>
+      <label class="tg"><input type="checkbox" id="tgOrbit" checked> Tự xoay chậm</label>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Tô màu IFC</h2>
+    <select id="colorMode">
+      <option value="status">Trạng thái dự đoán (built/partial/not_built)</option>
+      <option value="coverage">Coverage — mật độ điểm scan ủng hộ</option>
+      <option value="storey">Tầng</option>
+      <option value="type">Loại cấu kiện</option>
+    </select>
+    <div class="statusgrid" style="margin-top:8px">
+      <label class="st" style="color:var(--built)"><input type="checkbox" data-st="0" checked><span class="dot" style="background:var(--built)"></span>built<small id="c0"></small></label>
+      <label class="st" style="color:var(--partial)"><input type="checkbox" data-st="1" checked><span class="dot" style="background:var(--partial)"></span>partial<small id="c1"></small></label>
+      <label class="st" style="color:var(--notbuilt)"><input type="checkbox" data-st="2" checked><span class="dot" style="background:var(--notbuilt)"></span>not_built<small id="c2"></small></label>
+      <label class="st" style="color:var(--unobs)"><input type="checkbox" data-st="3" checked><span class="dot" style="background:var(--unobs)"></span>unobserved<small id="c3"></small></label>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Lọc</h2>
+    <div class="row"><label>Tầng</label></div>
+    <select id="storeySel"><option value="-1">Tất cả tầng</option></select>
+    <div class="row" style="margin-top:8px"><label>Loại cấu kiện</label></div>
+    <select id="typeSel"><option value="-1">Tất cả loại</option></select>
+    <div class="row" style="margin-top:8px"><label>Tìm GUID / tên</label></div>
+    <input type="text" id="search" placeholder="vd: 3k13… hoặc HSB">
+    <div class="views" style="margin-top:8px; grid-template-columns:1fr 1fr">
+      <button class="btn" id="searchBtn">Tìm &amp; bay tới</button>
+      <button class="btn" id="clearIso">Bỏ cô lập</button>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Điểm &amp; ống kính</h2>
+    <div class="row"><label>Cỡ điểm scan</label><output id="oScanSize">2.6</output></div>
+    <input type="range" id="scanSize" min="0.6" max="6" step="0.1" value="2.6">
+    <div class="row"><label>Cỡ điểm IFC</label><output id="oBimSize">4.2</output></div>
+    <input type="range" id="bimSize" min="0.8" max="9" step="0.1" value="4.2">
+    <div class="row"><label>Độ rõ scan</label><output id="oScanOp">0.85</output></div>
+    <input type="range" id="scanOp" min="0" max="1" step="0.05" value="0.85">
+    <div class="row"><label>Độ rõ IFC</label><output id="oBimOp">0.95</output></div>
+    <input type="range" id="bimOp" min="0" max="1" step="0.05" value="0.95">
+    <div class="row"><label>Sương chiều sâu</label><output id="oFog">0.25</output></div>
+    <input type="range" id="fog" min="0" max="1" step="0.05" value="0.25">
+  </div>
+  <div class="sec">
+    <h2>Mặt cắt ngang</h2>
+    <div class="toggles" style="grid-template-columns:1fr">
+      <label class="tg off"><input type="checkbox" id="tgCut"> Bật cắt theo cao độ Z</label>
+    </div>
+    <div class="row"><label>Cao độ cắt</label><output id="oCut">12.0 m</output></div>
+    <input type="range" id="cutZ" min="-2" max="14" step="0.1" value="12">
+  </div>
+  <div class="sec">
+    <h2>Góc nhìn</h2>
+    <div class="views">
+      <button class="btn" id="vReset">Reset</button>
+      <button class="btn" id="vTop">Top</button>
+      <button class="btn" id="vFront">Front</button>
+      <button class="btn" id="vSide">Side</button>
+    </div>
+    <p class="hintline">Kéo = xoay · Lăn = zoom · Shift/Kéo phải = pan · Click = chọn cấu kiện · Space = tự xoay · R = reset</p>
+  </div>
+</aside>
+
+<div id="legend">
+  <span class="chip"><span class="dot" style="color:var(--built); background:var(--built)"></span>built</span>
+  <span class="chip"><span class="dot" style="color:var(--partial); background:var(--partial)"></span>partial</span>
+  <span class="chip"><span class="dot" style="color:var(--notbuilt); background:var(--notbuilt)"></span>not_built</span>
+  <span class="chip"><span class="dot" style="color:var(--unobs); background:var(--unobs)"></span>unobserved</span>
+  <span class="chip"><span class="dot" style="color:var(--cyan); background:var(--cyan)"></span>scan RGB thật</span>
+</div>
+<div id="hints"><b>Kéo</b> xoay · <b>Lăn</b> zoom · <b>Shift+Kéo</b> pan · <b>Click</b> chọn</div>
+
+<div class="card" id="card">
+  <button class="close" id="cardClose" title="Đóng">✕</button>
+  <h3 id="cardName">—</h3>
+  <div class="guid" id="cardGuid">—</div>
+  <div class="kv"><span>Loại</span><b id="cardType">—</b></div>
+  <div class="kv"><span>Tầng</span><b id="cardStorey">—</b></div>
+  <div class="kv"><span>Diện tích bề mặt</span><b id="cardArea">—</b></div>
+  <div class="kv"><span>Dự đoán code (v5)</span><b id="cardPred">—</b></div>
+  <div class="kv"><span>Nhãn độc lập</span><b id="cardLabel">—</b></div>
+  <div class="kv"><span>Coverage (điểm scan ủng hộ)</span><b id="cardCov">—</b></div>
+  <div class="bar"><i id="cardBar" style="width:0%"></i></div>
+  <div class="actions">
+    <button class="btn" id="isoBtn">Cô lập cấu kiện</button>
+    <button class="btn" id="copyBtn">Copy GUID</button>
+    <a class="btn" id="evidenceBtn" href="#" target="_blank" rel="noopener">Sheet bằng chứng</a>
+    <button class="btn" id="flyBtn">Bay tới</button>
+  </div>
+</div>
+
+<div id="loading"><div class="box">
+  <div class="ring"></div>
+  <h2>Đang giải mã point cloud…</h2>
+  <p>SCAN ĐÃ ĐĂNG Ký × BỀ MẶT IFC · TUẦN 26</p>
+</div></div>
+
+<script src="data_mast3r.js"></script>
+<script>
+"use strict";
+(function(){
+const D = window.VIEWER_DATA;
+if(!D){ document.querySelector('#loading h2').textContent = 'Thiếu viewer_data.js — chạy build_viewer_3d.py trước.'; return; }
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl', {antialias:false, preserveDrawingBuffer:true, alpha:false});
+if(!gl){ document.querySelector('#loading h2').textContent='Trình duyệt không hỗ trợ WebGL.'; return; }
+
+/* ---------- decode ---------- */
+function b64bytes(s){ const bin = atob(s); const u = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; }
+const scanRaw = b64bytes(D.scanB64), bimRaw = b64bytes(D.bimB64);
+let NS = D.scanCount, NB = D.bimCount;
+let scanPos = new Float32Array(NS*3), scanRGB = new Float32Array(NS*3);
+{ const dv = new DataView(scanRaw.buffer);
+  for(let i=0;i<NS;i++){ const o=i*15;
+    scanPos[i*3]=dv.getFloat32(o,true); scanPos[i*3+1]=dv.getFloat32(o+4,true); scanPos[i*3+2]=dv.getFloat32(o+8,true);
+    scanRGB[i*3]=scanRaw[o+12]/255; scanRGB[i*3+1]=scanRaw[o+13]/255; scanRGB[i*3+2]=scanRaw[o+14]/255; } }
+const bimPos0 = new Float32Array(NB*3), bimSt0 = new Uint8Array(NB), bimCov0 = new Uint8Array(NB),
+      bimStorey0 = new Uint8Array(NB), bimType0 = new Uint8Array(NB), bimElem0 = new Uint16Array(NB);
+{ const dv = new DataView(bimRaw.buffer);
+  for(let i=0;i<NB;i++){ const o=i*18;
+    bimPos0[i*3]=dv.getFloat32(o,true); bimPos0[i*3+1]=dv.getFloat32(o+4,true); bimPos0[i*3+2]=dv.getFloat32(o+8,true);
+    bimSt0[i]=bimRaw[o+12]; bimCov0[i]=bimRaw[o+13]; bimStorey0[i]=bimRaw[o+14]; bimType0[i]=bimRaw[o+15];
+    bimElem0[i]=dv.getUint16(o+16,true); } }
+let bimPos=bimPos0, bimSt=bimSt0, bimCov=bimCov0, bimStorey=bimStorey0, bimType=bimType0, bimElem=bimElem0;
+/* software-GL quality tier: thinner point sampling so orbit stays fluid; hardware keeps full density */
+const dbgExt0 = gl.getExtension('WEBGL_debug_renderer_info');
+const FORCE_FULL = new URLSearchParams(location.search).has('full');
+const SOFTWARE_GL = !FORCE_FULL && /swiftshader|llvmpipe|software|basic render/i.test(String(dbgExt0 ? gl.getParameter(dbgExt0.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)));
+if(SOFTWARE_GL){
+  const st=6;
+  const sf=(a,c)=>{ const n=Math.floor(a.length/c/st); const o=new Float32Array(n*c);
+    for(let i=0;i<n;i++) for(let k=0;k<c;k++) o[i*c+k]=a[i*st*c+k]; return o; };
+  const su=(a,C)=>{ const n=Math.floor(a.length/st); const o=new C(n);
+    for(let i=0;i<n;i++) o[i]=a[i*st]; return o; };
+  scanPos=sf(scanPos,3); scanRGB=sf(scanRGB,3);
+  bimPos=sf(bimPos0,3); bimSt=su(bimSt0,Uint8Array); bimCov=su(bimCov0,Uint8Array);
+  bimStorey=su(bimStorey0,Uint8Array); bimType=su(bimType0,Uint8Array); bimElem=su(bimElem0,Uint16Array);
+  NS=scanPos.length/3; NB=bimPos.length/3;
+}
+const EL = D.elements;
+const elemCentroid = new Float32Array(EL.length*3), elemCount = new Uint32Array(EL.length);
+for(let i=0;i<NB;i++){ const e=bimElem[i]; elemCount[e]++;
+  elemCentroid[e*3]+=bimPos[i*3]; elemCentroid[e*3+1]+=bimPos[i*3+1]; elemCentroid[e*3+2]+=bimPos[i*3+2]; }
+for(let e=0;e<EL.length;e++){ const n=Math.max(1,elemCount[e]);
+  elemCentroid[e*3]/=n; elemCentroid[e*3+1]/=n; elemCentroid[e*3+2]/=n; }
+const elemStart = new Uint32Array(EL.length+1);
+for(let e=0;e<EL.length;e++) elemStart[e+1]=elemStart[e]+elemCount[e];
+
+/* ---------- palettes ---------- */
+const STATUS_COL = [[0.239,0.863,0.518],[1.0,0.690,0.125],[1.0,0.302,0.369],[0.490,0.541,0.627]];
+const STOREY_COL = [[0.208,0.769,1.0],[0.239,0.863,0.518],[1.0,0.690,0.125],[1.0,0.239,0.506],[0.620,0.470,1.0],[1.0,0.420,0.200],[0.300,0.850,0.800],[0.900,0.800,0.300]];
+const TYPE_COL = [[0.208,0.769,1.0],[0.300,0.600,1.0],[0.239,0.863,0.518],[1.0,0.690,0.125],[1.0,0.239,0.506],[0.620,0.470,1.0],[0.900,0.800,0.300]];
+function heat(t){ // coverage 0..1 : deep blue -> cyan -> amber -> red
+  const stops=[[0.10,0.22,0.45],[0.208,0.769,1.0],[1.0,0.820,0.400],[1.0,0.302,0.369]];
+  const x=Math.min(0.999,Math.max(0,t))*3, i=Math.floor(x), f=x-i;
+  return [stops[i][0]+(stops[i+1][0]-stops[i][0])*f, stops[i][1]+(stops[i+1][1]-stops[i][1])*f, stops[i][2]+(stops[i+1][2]-stops[i][2])*f];
+}
+
+/* ---------- state ---------- */
+const S = {
+  scan:true, bim:true, grid:true, orbit:true,
+  mode:'status', st:[true,true,true,true], storey:-1, type:-1, iso:-1,
+  scanSize:2.6, bimSize:4.2, scanOp:0.85, bimOp:0.95, fog:0.25,
+  cut:false, cutZ:12, selected:-1,
+};
+const elemVisible = new Uint8Array(EL.length);
+const statusCounts = [0,0,0,0];
+
+/* ---------- gl ---------- */
+const VS = `
+attribute vec3 aPos; attribute vec4 aCol;
+uniform mat4 uProj, uView; uniform float uSize, uScale, uCutOn, uCutZ, uBias;
+varying vec4 vCol; varying float vFog;
+uniform float uFogNear, uFogFar;
+void main(){
+  vec4 mv = uView * vec4(aPos,1.0);
+  mv.z += uBias;
+  gl_Position = uProj * mv;
+  float d = max(0.1, -mv.z);
+  gl_PointSize = clamp(uSize * uScale * (60.0 / d), 1.0, 64.0);
+  vCol = aCol;
+  if(uCutOn > 0.5 && aPos.z > uCutZ) vCol.a = 0.0;
+  vFog = smoothstep(uFogNear, uFogFar, d);
+}`;
+const FS = `
+precision mediump float;
+varying vec4 vCol; varying float vFog;
+uniform vec3 uFogColor; uniform float uFogAmt;
+void main(){
+  vec2 d = gl_PointCoord - 0.5; float r = length(d);
+  if(r > 0.5) discard;
+  float a = vCol.a * smoothstep(0.5, 0.18, r);
+  if(a < 0.02) discard;
+  vec3 c = mix(vCol.rgb, uFogColor, vFog * uFogAmt);
+  gl_FragColor = vec4(c, a * (1.0 - vFog * 0.85 * uFogAmt));
+}`;
+const LVS = `attribute vec3 aPos; uniform mat4 uProj, uView; void main(){ gl_Position = uProj * uView * vec4(aPos,1.0); }`;
+const LFS = `precision mediump float; uniform vec4 uColor; void main(){ gl_FragColor = uColor; }`;
+function prog(vs, fs){
+  function sh(t, src){ const s=gl.createShader(t); gl.shaderSource(s,src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+  const p=gl.createProgram(); gl.attachShader(p,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(p); if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p;
+}
+const pp = prog(VS,FS), lp = prog(LVS,LFS);
+const P = { aPos:gl.getAttribLocation(pp,'aPos'), aCol:gl.getAttribLocation(pp,'aCol'),
+  uProj:gl.getUniformLocation(pp,'uProj'), uView:gl.getUniformLocation(pp,'uView'),
+  uSize:gl.getUniformLocation(pp,'uSize'), uScale:gl.getUniformLocation(pp,'uScale'),
+  uCutOn:gl.getUniformLocation(pp,'uCutOn'), uCutZ:gl.getUniformLocation(pp,'uCutZ'), uBias:gl.getUniformLocation(pp,'uBias'),
+  uFogNear:gl.getUniformLocation(pp,'uFogNear'), uFogFar:gl.getUniformLocation(pp,'uFogFar'),
+  uFogColor:gl.getUniformLocation(pp,'uFogColor'), uFogAmt:gl.getUniformLocation(pp,'uFogAmt') };
+const L = { aPos:gl.getAttribLocation(lp,'aPos'), uProj:gl.getUniformLocation(lp,'uProj'),
+  uView:gl.getUniformLocation(lp,'uView'), uColor:gl.getUniformLocation(lp,'uColor') };
+function buf(data, dynamic){ const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b);
+  gl.bufferData(gl.ARRAY_BUFFER,data, dynamic?gl.DYNAMIC_DRAW:gl.STATIC_DRAW); return b; }
+const scanPosB = buf(scanPos), scanColB = buf(new Float32Array(NS*4), true);
+const bimPosB = buf(bimPos), bimColB = buf(new Float32Array(NB*4), true);
+const selPosB = buf(new Float32Array(0), true), selColB = buf(new Float32Array(0), true);
+let selCount = 0;
+const scanColF = new Float32Array(NS*4), bimColF = new Float32Array(NB*4);
+/* painter's algorithm: depth-bucketed CPU reorder, no depth buffer (point sprites
+   cannot write depth reliably — early-Z squares cull neighbouring surface points) */
+const BUCKETS = 48;
+const scanPosO = new Float32Array(NS*3), scanColO = new Float32Array(NS*4);
+const bimPosO = new Float32Array(NB*3), bimColO = new Float32Array(NB*4);
+const scanPosOB = buf(scanPosO, true), scanColOB = buf(scanColO, true);
+const bimPosOB = buf(bimPosO, true), bimColOB = buf(bimColO, true);
+const scanBucket = new Uint16Array(NS), elemBucket = new Uint16Array(EL.length);
+const scanCounts = new Uint32Array(BUCKETS), bimCounts = new Uint32Array(BUCKETS);
+const scanOff = new Uint32Array(BUCKETS), bimOff = new Uint32Array(BUCKETS);
+const scanDepth = new Float32Array(NS), elemDepth = new Float32Array(EL.length);
+function buildPaintOrder(){
+  const v2=view[2], v6=view[6], v10=view[10], v14=view[14];
+  let mn=1e9, mx=-1e9;
+  for(let i=0;i<NS;i++){ const d=v2*scanPos[i*3]+v6*scanPos[i*3+1]+v10*scanPos[i*3+2]+v14; scanDepth[i]=d; if(d<mn)mn=d; if(d>mx)mx=d; }
+  for(let e=0;e<EL.length;e++){ const d=v2*elemCentroid[e*3]+v6*elemCentroid[e*3+1]+v10*elemCentroid[e*3+2]+v14; elemDepth[e]=d; if(d<mn)mn=d; if(d>mx)mx=d; }
+  const span=Math.max(1e-6,mx-mn);
+  scanCounts.fill(0); bimCounts.fill(0);
+  for(let i=0;i<NS;i++){ const b=Math.min(BUCKETS-1,((scanDepth[i]-mn)/span*BUCKETS)|0); scanBucket[i]=b; scanCounts[b]++; }
+  for(let e=0;e<EL.length;e++){ const b=Math.min(BUCKETS-1,((elemDepth[e]-mn)/span*BUCKETS)|0); elemBucket[e]=b; bimCounts[b]+=elemCount[e]; }
+  let so=0, bo=0;
+  for(let b=0;b<BUCKETS;b++){ scanOff[b]=so; bimOff[b]=bo; so+=scanCounts[b]; bo+=bimCounts[b]; }
+  const sc=scanOff.slice(), bc=bimOff.slice();
+  for(let i=0;i<NS;i++){ const d3=sc[scanBucket[i]]++*3, s3=i*3, d4=d3/3*4, s4=i*4;
+    scanPosO[d3]=scanPos[s3]; scanPosO[d3+1]=scanPos[s3+1]; scanPosO[d3+2]=scanPos[s3+2];
+    scanColO[d4]=scanColF[s4]; scanColO[d4+1]=scanColF[s4+1]; scanColO[d4+2]=scanColF[s4+2]; scanColO[d4+3]=scanColF[s4+3]; }
+  for(let e=0;e<EL.length;e++){ const n=elemCount[e], s0=elemStart[e], b=elemBucket[e]; let dst=bc[b]; bc[b]+=n;
+    for(let k=0;k<n;k++){ const src=s0+k, d3=dst*3, s3=src*3, d4=dst*4, s4=src*4; dst++;
+      bimPosO[d3]=bimPos[s3]; bimPosO[d3+1]=bimPos[s3+1]; bimPosO[d3+2]=bimPos[s3+2];
+      bimColO[d4]=bimColF[s4]; bimColO[d4+1]=bimColF[s4+1]; bimColO[d4+2]=bimColF[s4+2]; bimColO[d4+3]=bimColF[s4+3]; } }
+  gl.bindBuffer(gl.ARRAY_BUFFER, scanPosOB); gl.bufferSubData(gl.ARRAY_BUFFER,0,scanPosO);
+  gl.bindBuffer(gl.ARRAY_BUFFER, scanColOB); gl.bufferSubData(gl.ARRAY_BUFFER,0,scanColO);
+  gl.bindBuffer(gl.ARRAY_BUFFER, bimPosOB); gl.bufferSubData(gl.ARRAY_BUFFER,0,bimPosO);
+  gl.bindBuffer(gl.ARRAY_BUFFER, bimColOB); gl.bufferSubData(gl.ARRAY_BUFFER,0,bimColO);
+}
+
+/* grid + axes (bounds from BIM surfaces; scan contains far outliers) */
+let mx0=1e9,my0=1e9,mz0=1e9,mx1=-1e9,my1=-1e9,mz1=-1e9;
+for(let i=0;i<NB;i++){ const x=bimPos[i*3],y=bimPos[i*3+1],z=bimPos[i*3+2];
+  if(x<mx0)mx0=x; if(x>mx1)mx1=x; if(y<my0)my0=y; if(y>my1)my1=y; if(z<mz0)mz0=z; if(z>mz1)mz1=z; }
+const b0=[mx0-3,my0-3,mz0-1], b1=[mx1+3,my1+3,mz1+1];
+const gz = Math.floor(b0[2]);
+const gx0 = Math.floor(b0[0]/2)*2, gx1 = Math.ceil(b1[0]/2)*2, gy0 = Math.floor(b0[1]/2)*2, gy1 = Math.ceil(b1[1]/2)*2;
+const gridVerts = [];
+for(let x=gx0;x<=gx1;x+=2) gridVerts.push(x,gy0,gz, x,gy1,gz);
+for(let y=gy0;y<=gy1;y+=2) gridVerts.push(gx0,y,gz, gx1,y,gz);
+const gridB = buf(new Float32Array(gridVerts));
+const axisB = buf(new Float32Array([0,0,gz, 6,0,gz,  0,0,gz, 0,6,gz,  0,0,gz, 0,0,gz+6]));
+
+/* ---------- matrices ---------- */
+function perspective(fovy, aspect, near, far){
+  const f = 1/Math.tan(fovy/2), nf = 1/(near-far);
+  return new Float32Array([f/aspect,0,0,0, 0,f,0,0, 0,0,(far+near)*nf,-1, 0,0,2*far*near*nf,0]);
+}
+function lookAt(eye, target, up){
+  let zx=eye[0]-target[0], zy=eye[1]-target[1], zz=eye[2]-target[2];
+  let l=Math.hypot(zx,zy,zz); zx/=l; zy/=l; zz/=l;
+  let xx=up[1]*zz-up[2]*zy, xy=up[2]*zx-up[0]*zz, xz=up[0]*zy-up[1]*zx;
+  l=Math.hypot(xx,xy,xz)||1; xx/=l; xy/=l; xz/=l;
+  const yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+  return new Float32Array([xx,yx,zx,0, xy,yy,zy,0, xz,yz,zz,0,
+    -(xx*eye[0]+xy*eye[1]+xz*eye[2]), -(yx*eye[0]+yy*eye[1]+yz*eye[2]), -(zx*eye[0]+zy*eye[1]+zz*eye[2]), 1]);
+}
+function mul(a,b){ const o=new Float32Array(16);
+  for(let c=0;c<4;c++) for(let r=0;r<4;r++){ let s=0; for(let k=0;k<4;k++) s+=a[k*4+r]*b[c*4+k]; o[c*4+r]=s; } return o; }
+
+/* ---------- camera ---------- */
+const center = [(b0[0]+b1[0])/2, (b0[1]+b1[1])/2, 4.5];
+const HOME = { theta:Math.PI+0.35, phi:1.05, radius:40, target:center.slice() };
+const cam = { theta:HOME.theta, phi:HOME.phi, radius:HOME.radius, target:center.slice() };
+const goal = { theta:HOME.theta, phi:HOME.phi, radius:HOME.radius, target:center.slice() };
+function eyePos(c){ const sp=Math.sin(c.phi), cp=Math.cos(c.phi);
+  return [c.target[0]+c.radius*sp*Math.sin(c.theta), c.target[1]+c.radius*sp*Math.cos(c.theta), c.target[2]+c.radius*cp]; }
+
+/* ---------- recolor / filters ---------- */
+function recolor(){
+  statusCounts.fill(0);
+  for(let e=0;e<EL.length;e++){
+    const el=EL[e];
+    const vis = S.st[el.p] && (S.storey<0||el.s===S.storey) && (S.type<0||el.t===S.type) && (S.iso<0||e===S.iso);
+    elemVisible[e]=vis?1:0; if(vis) statusCounts[el.p]++;
+  }
+  for(let i=0;i<NB;i++){
+    const e=bimElem[i], vis=elemVisible[e]&&S.bim;
+    let c;
+    if(S.mode==='status') c=STATUS_COL[bimSt[i]];
+    else if(S.mode==='coverage') c=heat(bimCov[i]/255);
+    else if(S.mode==='storey') c=STOREY_COL[bimStorey[i]%STOREY_COL.length];
+    else c=TYPE_COL[bimType[i]%TYPE_COL.length];
+    const o=i*4;
+    bimColF[o]=c[0]; bimColF[o+1]=c[1]; bimColF[o+2]=c[2]; bimColF[o+3]=vis?S.bimOp:0;
+  }
+  for(let i=0;i<NS;i++){ const o=i*4;
+    scanColF[o]=scanRGB[i*3]; scanColF[o+1]=scanRGB[i*3+1]; scanColF[o+2]=scanRGB[i*3+2];
+    scanColF[o+3]=S.scan?S.scanOp:0; }
+  gl.bindBuffer(gl.ARRAY_BUFFER, bimColB); gl.bufferSubData(gl.ARRAY_BUFFER,0,bimColF);
+  gl.bindBuffer(gl.ARRAY_BUFFER, scanColB); gl.bufferSubData(gl.ARRAY_BUFFER,0,scanColF);
+  for(let k=0;k<4;k++) document.getElementById('c'+k).textContent = statusCounts[k];
+  document.getElementById('chipCount').innerHTML = 'Đang hiện <b>' + (statusCounts[0]+statusCounts[1]+statusCounts[2]+statusCounts[3]) + '</b> / ' + EL.length + ' cấu kiện';
+  updateSelectionBuffer();
+}
+function updateSelectionBuffer(){
+  if(S.selected<0){ selCount=0; return; }
+  const pts=[];
+  for(let i=0;i<NB;i++) if(bimElem[i]===S.selected){ pts.push(bimPos[i*3],bimPos[i*3+1],bimPos[i*3+2]); }
+  selCount=pts.length/3;
+  const col=new Float32Array(selCount*4);
+  for(let i=0;i<selCount;i++){ col[i*4]=1; col[i*4+1]=0.239; col[i*4+2]=0.506; col[i*4+3]=1; }
+  gl.bindBuffer(gl.ARRAY_BUFFER, selPosB); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pts),gl.DYNAMIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, selColB); gl.bufferData(gl.ARRAY_BUFFER,col,gl.DYNAMIC_DRAW);
+}
+
+/* ---------- render loop ---------- */
+const renderScale = SOFTWARE_GL ? 0.6 : 1;
+let pixelRatio = Math.min(2, window.devicePixelRatio||1);
+function resize(){
+  pixelRatio = Math.min(2, window.devicePixelRatio||1);
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  const tw=Math.round(w*pixelRatio*renderScale), th=Math.round(h*pixelRatio*renderScale);
+  if(canvas.width!==tw||canvas.height!==th){ canvas.width=tw; canvas.height=th; }
+}
+window.addEventListener('resize', resize);
+let last=performance.now(), proj=null, view=null;
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(S.orbit && !drag.active) goal.theta += dt*0.06;
+  const k=1-Math.exp(-dt*9);
+  cam.theta+=(goal.theta-cam.theta)*k; cam.phi+=(goal.phi-cam.phi)*k; cam.radius+=(goal.radius-cam.radius)*k;
+  for(let i=0;i<3;i++) cam.target[i]+=(goal.target[i]-cam.target[i])*k;
+  resize();
+  gl.viewport(0,0,canvas.width,canvas.height);
+  gl.clearColor(0.043,0.071,0.125,1); gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.disable(gl.DEPTH_TEST); gl.depthMask(false);
+  proj=perspective(50*Math.PI/180, canvas.width/canvas.height, 0.5, 300);
+  view=lookAt(eyePos(cam), cam.target, [0,0,1]);
+  const fogNear=cam.radius*1.15, fogFar=cam.radius*4.2;
+  if(S.grid){
+    gl.useProgram(lp); gl.uniformMatrix4fv(L.uProj,false,proj); gl.uniformMatrix4fv(L.uView,false,view);
+    gl.bindBuffer(gl.ARRAY_BUFFER,gridB); gl.enableVertexAttribArray(L.aPos); gl.vertexAttribPointer(L.aPos,3,gl.FLOAT,false,0,0);
+    gl.uniform4f(L.uColor,0.13,0.24,0.42,0.55); gl.drawArrays(gl.LINES,0,gridVerts.length/3);
+    gl.bindBuffer(gl.ARRAY_BUFFER,axisB); gl.vertexAttribPointer(L.aPos,3,gl.FLOAT,false,0,0);
+    gl.uniform4f(L.uColor,1,0.35,0.4,0.9); gl.drawArrays(gl.LINES,0,2);
+    gl.uniform4f(L.uColor,0.3,0.9,0.5,0.9); gl.drawArrays(gl.LINES,2,2);
+    gl.uniform4f(L.uColor,0.2,0.77,1,0.9); gl.drawArrays(gl.LINES,4,2);
+  }
+  gl.useProgram(pp);
+  gl.uniformMatrix4fv(P.uProj,false,proj); gl.uniformMatrix4fv(P.uView,false,view);
+  gl.uniform1f(P.uScale,pixelRatio*renderScale); gl.uniform1f(P.uCutOn,S.cut?1:0); gl.uniform1f(P.uCutZ,S.cutZ);
+  gl.uniform1f(P.uFogNear,fogNear); gl.uniform1f(P.uFogFar,fogFar);
+  gl.uniform3f(P.uFogColor,0.043,0.071,0.125); gl.uniform1f(P.uFogAmt,S.fog);
+  function drawPoints(posB,colB,count,size,bias){
+    if(!count) return;
+    gl.uniform1f(P.uSize,size); gl.uniform1f(P.uBias,bias||0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,posB); gl.enableVertexAttribArray(P.aPos); gl.vertexAttribPointer(P.aPos,3,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,colB); gl.enableVertexAttribArray(P.aCol); gl.vertexAttribPointer(P.aCol,4,gl.FLOAT,false,0,0);
+    gl.drawArrays(gl.POINTS,0,count);
+  }
+  const szf = SOFTWARE_GL ? 0.75 : 1;
+  function bindLayer(posB,colB){
+    gl.bindBuffer(gl.ARRAY_BUFFER,posB); gl.enableVertexAttribArray(P.aPos); gl.vertexAttribPointer(P.aPos,3,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,colB); gl.enableVertexAttribArray(P.aCol); gl.vertexAttribPointer(P.aCol,4,gl.FLOAT,false,0,0);
+  }
+  gl.uniform1f(P.uBias,0);
+  buildPaintOrder();
+  for(let b=0;b<BUCKETS;b++){
+    if(S.scan&&scanCounts[b]){
+      gl.uniform1f(P.uSize,S.scanSize*szf); bindLayer(scanPosOB,scanColOB);
+      gl.drawArrays(gl.POINTS,scanOff[b],scanCounts[b]);
+    }
+    if(S.bim&&bimCounts[b]){
+      gl.uniform1f(P.uSize,S.bimSize*szf); bindLayer(bimPosOB,bimColOB);
+      gl.drawArrays(gl.POINTS,bimOff[b],bimCounts[b]);
+    }
+  }
+  drawPoints(selPosB,selColB,selCount,S.bimSize*1.9*szf,0);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- interaction ---------- */
+const drag={active:false,mode:null,x:0,y:0,pointers:new Map(),pinch:0,moved:0};
+canvas.addEventListener('pointerdown',e=>{
+  canvas.setPointerCapture(e.pointerId); drag.pointers.set(e.pointerId,[e.clientX,e.clientY]);
+  drag.active=true; drag.moved=0; canvas.classList.add('dragging');
+  if(drag.pointers.size===2){ const p=[...drag.pointers.values()]; drag.pinch=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]); drag.mode='pinch'; }
+  else drag.mode=(e.shiftKey||e.button===2)?'pan':'rotate';
+  drag.x=e.clientX; drag.y=e.clientY;
+});
+canvas.addEventListener('pointermove',e=>{
+  if(!drag.active) return;
+  if(drag.pointers.has(e.pointerId)) drag.pointers.set(e.pointerId,[e.clientX,e.clientY]);
+  const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.moved+=Math.abs(dx)+Math.abs(dy);
+  if(drag.mode==='pinch'&&drag.pointers.size===2){
+    const p=[...drag.pointers.values()]; const d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);
+    if(drag.pinch>0) goal.radius=Math.min(240,Math.max(3,goal.radius*drag.pinch/d));
+    drag.pinch=d;
+  } else if(drag.mode==='pan'){
+    const s=cam.radius*0.0016;
+    const c=Math.cos(cam.theta), sn=Math.sin(cam.theta), cp=Math.cos(cam.phi), sp=Math.sin(cam.phi);
+    goal.target[0]+=(c*dx - sn*cp*dy)*s; goal.target[1]+=(-sn*dx - c*cp*dy)*s; goal.target[2]+=sp*dy*s;
+  } else {
+    goal.theta-=dx*0.0055; goal.phi=Math.min(Math.PI-0.05,Math.max(0.05,goal.phi+dy*0.0055));
+  }
+  drag.x=e.clientX; drag.y=e.clientY;
+});
+function endPointer(e){
+  drag.pointers.delete(e.pointerId);
+  if(drag.pointers.size===0){
+    canvas.classList.remove('dragging');
+    if(drag.active&&drag.moved<6&&e.button===0) pick(e.clientX,e.clientY);
+    drag.active=false; drag.mode=null;
+  }
+}
+canvas.addEventListener('pointerup',endPointer);
+canvas.addEventListener('pointercancel',endPointer);
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('wheel',e=>{ e.preventDefault();
+  goal.radius=Math.min(240,Math.max(3,goal.radius*Math.exp(e.deltaY*0.0012))); },{passive:false});
+window.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+  if(e.code==='Space'){ e.preventDefault(); S.orbit=!S.orbit; document.getElementById('tgOrbit').checked=S.orbit; }
+  if(e.key==='r'||e.key==='R') setView(HOME);
+});
+function setView(v){ goal.theta=v.theta; goal.phi=v.phi; goal.radius=v.radius; goal.target=v.target.slice(); }
+
+/* ---------- picking ---------- */
+function pick(px,py){
+  const rect=canvas.getBoundingClientRect();
+  const x=(px-rect.left)/rect.width*2-1, y=-((py-rect.top)/rect.height*2-1);
+  const pv=mul(proj,view);
+  let best=-1, bestD=14*14;
+  for(let i=0;i<NB;i++){
+    if(!elemVisible[bimElem[i]]) continue;
+    const px3=bimPos[i*3], py3=bimPos[i*3+1], pz3=bimPos[i*3+2];
+    const cw=pv[3]*px3+pv[7]*py3+pv[11]*pz3+pv[15];
+    if(cw<=0.01) continue;
+    const cx=(pv[0]*px3+pv[4]*py3+pv[8]*pz3+pv[12])/cw;
+    const cy=(pv[1]*px3+pv[5]*py3+pv[9]*pz3+pv[13])/cw;
+    const sx=(cx-x)*rect.width/2, sy=(cy-y)*rect.height/2;
+    const d=sx*sx+sy*sy;
+    if(d<bestD){ bestD=d; best=bimElem[i]; }
+  }
+  if(best>=0) select(best); else closeCard();
+}
+const STATUS_NAME=['built','partial','not_built','unobserved'];
+const STATUS_CSS=['var(--built)','var(--partial)','var(--notbuilt)','var(--unobs)'];
+function badge(text,color){ return '<span class="badge" style="color:'+color+'; border-color:'+color+'; background:rgba(255,255,255,.04)">'+text+'</span>'; }
+function select(e){
+  S.selected=e; updateSelectionBuffer();
+  const el=EL[e];
+  document.getElementById('cardName').textContent=el.n||'(không tên)';
+  document.getElementById('cardGuid').textContent=el.g;
+  document.getElementById('cardType').textContent=D.types[el.t];
+  document.getElementById('cardStorey').textContent=D.storeys[el.s]||'—';
+  document.getElementById('cardArea').textContent=el.a.toFixed(2)+' m²';
+  document.getElementById('cardPred').innerHTML=badge(STATUS_NAME[el.p],STATUS_CSS[el.p]);
+  document.getElementById('cardLabel').innerHTML=el.l?badge(el.l+' · '+el.sp, el.l===STATUS_NAME[el.p]?'var(--built)':'var(--magenta)'):'<span style="color:var(--muted)">ngoài cohort nhãn</span>';
+  document.getElementById('cardCov').textContent=(el.c*100).toFixed(1)+'%';
+  document.getElementById('cardBar').style.width=Math.round(el.c*100)+'%';
+  const ev=document.getElementById('evidenceBtn');
+  if(el.l){ ev.style.display='block';
+    ev.href=(el.sp==='test'?'artifacts/week26_test_evidence/':'artifacts/week26_pilot_evidence/')+el.g+'.png';
+  } else ev.style.display='none';
+  document.getElementById('isoBtn').textContent = S.iso===e?'Bỏ cô lập':'Cô lập cấu kiện';
+  document.getElementById('card').classList.add('open');
+}
+function closeCard(){ document.getElementById('card').classList.remove('open'); S.selected=-1; updateSelectionBuffer(); }
+document.getElementById('cardClose').onclick=closeCard;
+document.getElementById('isoBtn').onclick=()=>{ S.iso = S.iso===S.selected?-1:S.selected;
+  document.getElementById('isoBtn').textContent=S.iso<0?'Cô lập cấu kiện':'Bỏ cô lập'; recolor(); };
+document.getElementById('clearIso').onclick=()=>{ S.iso=-1; recolor(); };
+document.getElementById('flyBtn').onclick=()=>{ if(S.selected<0) return; flyTo(S.selected); };
+document.getElementById('copyBtn').onclick=async()=>{ try{ await navigator.clipboard.writeText(EL[S.selected].g);
+  document.getElementById('copyBtn').textContent='Đã copy ✓'; setTimeout(()=>document.getElementById('copyBtn').textContent='Copy GUID',1200);
+  }catch(err){ document.getElementById('copyBtn').textContent='Clipboard chặn'; setTimeout(()=>document.getElementById('copyBtn').textContent='Copy GUID',1200); } };
+function flyTo(e){ goal.target=[elemCentroid[e*3],elemCentroid[e*3+1],elemCentroid[e*3+2]];
+  goal.radius=Math.max(6,goal.radius*0.35); }
+
+/* ---------- controls wiring ---------- */
+function bindRange(id,out,key,fmt){ const el=document.getElementById(id), o=document.getElementById(out);
+  el.addEventListener('input',()=>{ S[key]=parseFloat(el.value); o.textContent=fmt?fmt(S[key]):S[key].toFixed(2); recolor(); }); }
+bindRange('scanSize','oScanSize','scanSize',v=>v.toFixed(1));
+bindRange('bimSize','oBimSize','bimSize',v=>v.toFixed(1));
+bindRange('scanOp','oScanOp','scanOp');
+bindRange('bimOp','oBimOp','bimOp');
+bindRange('fog','oFog','fog');
+bindRange('cutZ','oCut','cutZ',v=>v.toFixed(1)+' m');
+function bindToggle(id,key,extra){ const el=document.getElementById(id);
+  el.addEventListener('change',()=>{ S[key]=el.checked; el.closest('.tg').classList.toggle('off',!el.checked); if(extra) extra(); recolor(); }); }
+bindToggle('tgScan','scan'); bindToggle('tgBim','bim'); bindToggle('tgGrid','grid'); bindToggle('tgOrbit','orbit');
+bindToggle('tgCut','cut');
+document.getElementById('colorMode').addEventListener('change',e=>{ S.mode=e.target.value; recolor(); });
+document.querySelectorAll('.st input').forEach(inp=>inp.addEventListener('change',()=>{ S.st[+inp.dataset.st]=inp.checked; recolor(); }));
+const storeySel=document.getElementById('storeySel'), typeSel=document.getElementById('typeSel');
+D.storeys.forEach((n,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=n; storeySel.appendChild(o); });
+D.types.forEach((n,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=n; typeSel.appendChild(o); });
+storeySel.addEventListener('change',()=>{ S.storey=+storeySel.value; recolor(); });
+typeSel.addEventListener('change',()=>{ S.type=+typeSel.value; recolor(); });
+function doSearch(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  if(!q) return;
+  const e=EL.findIndex(el=>el.g.toLowerCase().includes(q)||(el.n||'').toLowerCase().includes(q));
+  if(e<0){ document.getElementById('search').style.borderColor='var(--notbuilt)';
+    setTimeout(()=>document.getElementById('search').style.borderColor='',900); return; }
+  S.iso=e; recolor(); select(e); flyTo(e);
+}
+document.getElementById('searchBtn').onclick=doSearch;
+document.getElementById('search').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+document.getElementById('vReset').onclick=()=>setView(HOME);
+document.getElementById('vTop').onclick=()=>setView({theta:0.0,phi:0.06,radius:60,target:center.slice()});
+document.getElementById('vFront').onclick=()=>setView({theta:Math.PI,phi:1.45,radius:48,target:center.slice()});
+document.getElementById('vSide').onclick=()=>setView({theta:Math.PI/2,phi:1.35,radius:48,target:center.slice()});
+document.getElementById('exportBtn').onclick=()=>{
+  const a=document.createElement('a'); a.download='schependomlaan_week26_3d.png';
+  a.href=canvas.toDataURL('image/png'); a.click();
+};
+document.getElementById('menuBtn').onclick=()=>document.getElementById('panel').classList.toggle('open');
+
+/* ---------- go ---------- */
+recolor(); resize(); requestAnimationFrame(frame);
+setTimeout(()=>document.getElementById('loading').classList.add('done'), 350);
+})();
+</script>
+</body>
+</html>
