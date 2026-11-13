@@ -1,0 +1,10 @@
+{
+  "n_frozen": 21,
+  "n_excluded": 17,
+  "sha256": "6cdde870dde51151c700743731b5131a58042dba61a8c0b68275c441cc77eb9d",
+  "classes": {
+    "not_built": 14,
+    "built": 6,
+    "partial": 1
+  }
+}

@@ -19,3 +19,6 @@ data/schependomlaan/raw/*
 # Logs / scratch
 *.log
 .DS_Store
+# professional_95: raw nặng tải riêng (download_data.sh); out/ sinh khi chạy
+professional_95/data/raw/*
+professional_95/out/

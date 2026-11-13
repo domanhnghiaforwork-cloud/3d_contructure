@@ -1,0 +1,22 @@
+{
+  "ifc_path": "/home/adminpc/nghia/vsf/nghien_cuu/data/schependomlaan/raw/model.ifc",
+  "ifc_sha256": "2c3565ca1904f2aa61adab92024cf3755b2c5b21a498144d3094d7cb58cebec7",
+  "types": [
+    "IfcWall",
+    "IfcSlab",
+    "IfcRoof",
+    "IfcBeam",
+    "IfcColumn",
+    "IfcCovering"
+  ],
+  "n_elements": 2672,
+  "reasons": {
+    "solid_geometry": 2538,
+    "empty_after_opening_subtraction": 51,
+    "nonphysical_air_only": 31,
+    "decomposed_parent_use_children": 52
+  },
+  "n_eligible": 2590,
+  "rule": "Physical-scope eligibility decided from IFC semantics only (materials, openings, decomposition), before any classifier prediction or label inspection.",
+  "caveat": "Eligibility is not a progress label and not yet a frozen test cohort; labeling and visibility screening come next."
+}

@@ -1,0 +1,98 @@
+{
+  "purpose": "Validation-only threshold search; never run on the frozen test cohort",
+  "n": 44,
+  "default_thresholds": {
+    "partial": 0.1,
+    "built": 0.65,
+    "accuracy": 0.6363636363636364,
+    "macro_f1": 0.27860696517412936,
+    "confusion": [
+      [
+        0,
+        5,
+        7,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0
+      ],
+      [
+        0,
+        0,
+        28,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "top10": [
+    {
+      "partial_threshold": 0.1,
+      "built_threshold": 0.5,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.3738450604122246
+    },
+    {
+      "partial_threshold": 0.1,
+      "built_threshold": 0.55,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.3738450604122246
+    },
+    {
+      "partial_threshold": 0.15,
+      "built_threshold": 0.5,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.3697478991596639
+    },
+    {
+      "partial_threshold": 0.15,
+      "built_threshold": 0.55,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.3697478991596639
+    },
+    {
+      "partial_threshold": 0.05,
+      "built_threshold": 0.5,
+      "accuracy": 0.6136363636363636,
+      "macro_f1": 0.36405529953917054
+    },
+    {
+      "partial_threshold": 0.05,
+      "built_threshold": 0.55,
+      "accuracy": 0.6136363636363636,
+      "macro_f1": 0.36405529953917054
+    },
+    {
+      "partial_threshold": 0.2,
+      "built_threshold": 0.5,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.36190476190476195
+    },
+    {
+      "partial_threshold": 0.2,
+      "built_threshold": 0.55,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.36190476190476195
+    },
+    {
+      "partial_threshold": 0.25,
+      "built_threshold": 0.5,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.36190476190476195
+    },
+    {
+      "partial_threshold": 0.25,
+      "built_threshold": 0.55,
+      "accuracy": 0.6818181818181818,
+      "macro_f1": 0.36190476190476195
+    }
+  ]
+}
