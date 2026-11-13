@@ -34,9 +34,9 @@ code{background:#0e1830;padding:2px 6px;border-radius:5px;font-size:.88em}
 
 <div class="cards">
   <a class="card" href="dust3r.html">
-    <h2>DUSt3R</h2>
-    <div class="acc">61.9%</div>
-    <div class="meta">13/21 phần tử test · 113 frame @384px · logwin<br>Mở viewer 3D →</div>
+    <h2>DUSt3R (đã khử nhiễu)</h2>
+    <div class="acc">66.7%</div>
+    <div class="meta">14/21 phần tử test · 113 frame @384px · logwin · cloud sạch khối nhà<br>Mở viewer 3D →</div>
   </a>
   <a class="card mast3r" href="mast3r.html">
     <h2>MASt3R metric</h2>
@@ -49,7 +49,7 @@ code{background:#0e1830;padding:2px 6px;border-radius:5px;font-size:.88em}
 <table>
 <tr><th>Nguồn cloud</th><th>Test acc</th><th>Built recall</th><th>Partial recall</th><th>Thắng baseline đa số (66.7%)?</th></tr>
 <tr><td>Chuyên nghiệp week26.ply</td><td>95.24% (20/21)</td><td class="ok">5/6</td><td class="ok">1/1</td><td class="ok">có</td></tr>
-<tr><td>Video → DUSt3R</td><td>61.9% (13/21)</td><td class="no">0/6</td><td class="no">0/1</td><td class="no">không (dưới)</td></tr>
+<tr><td>Video → DUSt3R (khử nhiễu)</td><td>66.7% (14/21)</td><td class="no">0/6</td><td class="no">0/1</td><td class="no">không (bằng)</td></tr>
 <tr><td>Video → MASt3R metric</td><td>66.7% (14/21)</td><td class="no">0/6</td><td class="no">0/1</td><td class="no">không (bằng)</td></tr>
 </table>
 
@@ -57,7 +57,8 @@ code{background:#0e1830;padding:2px 6px;border-radius:5px;font-size:.88em}
 <strong>Cách xem:</strong> bấm một thẻ ở trên để mở viewer 3D (tự chứa, không cần internet).
 Kéo chuột để xoay, lăn để phóng to; bật/tắt lớp cloud video và BIM theo trạng thái
 (built / partial / not_built / unobserved). Cloud video đã căn chỉnh lại cho khớp IFC
-(MASt3R căn cứng scale=1, overlap cloud chuyên nghiệp 78%; DUSt3R tìm kiếm đa scale, 45%).<br><br>
+(MASt3R căn cứng scale=1, overlap cloud chuyên nghiệp 78%; DUSt3R khử nhiễu cây/đất
++ căn lại vào khối nhà, overlap 62%).<br><br>
 <strong>Kết luận trung thực:</strong> cả hai pipeline video <strong>không phát hiện đúng
 phần tử built nào (recall 0/6)</strong>; accuracy 61.9%/66.7% chỉ bằng hoặc dưới baseline
 đoán <code>not_built</code> hàng loạt (66.7%, do 14/21 nhãn test là not_built) —

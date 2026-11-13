@@ -417,3 +417,45 @@ bị xoay/phóng sai hướng**. Kiểm tra lại phát hiện HAI vấn đề, 
   KHÔNG loại dự đoán thiếu để thổi accuracy.
 - Hướng đi thật sự để đạt ≥80% từ video: dữ liệu nguồn tốt hơn (đa quỹ đạo/đa góc,
   độ phân giải cao, bề mặt có texture) hoặc reconstruction chuyên nghiệp.
+
+## 2026-11-13 (tiếp) — Tối ưu mỏ neo week26.ply + khử nhiễu/căn DUSt3R theo yêu cầu người dùng
+
+Người dùng xem viewer và yêu cầu: (1) tinh chỉnh bước ghép week26.ply→IFC cho chuẩn
+hơn (bản chuyên nghiệp đã khớp, chỉ lệch hướng chút); (2) dựa vào mỏ neo đó khử nhiễu
+môi trường (cây/đất/điểm rời) và xoay cloud DUSt3R đúng hướng để bám IFC như bản
+chuyên nghiệp. Làm thuần CPU cục bộ (không GPU).
+
+### (1) Tinh chỉnh đăng ký chuyên nghiệp→IFC — refine_registration.py
+- ICP point-to-plane (trimmed, rigid khóa scale) từ G3, against mẫu bề mặt IFC
+  (registration_inputs.npz target), crop source về bbox khối nhà.
+- KẾT QUẢ TRUNG THỰC: delta xoay chỉ **0.82°**, median khối nhà 0.2627→0.2605 m
+  (~2mm), mean gần như không đổi. ⇒ Đăng ký chuyên nghiệp→IFC VỐN ĐÃ gần tối ưu;
+  phần dư ~0.26m là lệch as-built vs thiết kế + occlusion, KHÔNG phải lỗi xoay hệ
+  thống sửa được. Giữ G3 đóng băng làm mỏ neo (đã chứng minh 95.24%); transform
+  tinh chỉnh lưu riêng (artifacts/week26_registration_refined/) nhưng lợi ích không
+  đáng kể nên không thay G3.
+
+### (2) Khử nhiễu + căn DUSt3R — clean_align_dust3r.py
+- Lọc vegetation bằng màu (bỏ điểm xanh lá trội): 1.200.000 → 1.021.030 (bỏ 178.970
+  điểm cây).
+- Căn thô (PCA + 24 phép quay + tìm scale) vào KHỐI NHÀ chuyên nghiệp khung ref
+  (388.735 điểm, crop theo bbox IFC nghịch đảo G3): score 0.276 m, scale0 17.72.
+- Crop về bbox khối nhà + statistical outlier removal (mét) → 822.279 điểm sạch.
+- ICP similarity mịn → scale 13.59; xuất cloud sạch khung ref (eval đóng băng) +
+  khung IFC (viewer) + metrics.
+- CẢI THIỆN HÌNH HỌC: overlap recon→professional **45.1% → 61.7%**; median lệch
+  **0.157 m**; hết cây/đất (cloud chỉ còn khối nhà như ảnh chuyên nghiệp).
+  Coverage professional→recon chỉ 17.3% (DUSt3R một quỹ đạo chỉ thấy vài mặt —
+  hạn chế dữ liệu nguồn, không phải lỗi căn).
+
+### Eval trung thực trên cloud DUSt3R đã khử nhiễu
+- test: 14/21 = 66.7%, **built recall 0/6, partial 0/1, beats_majority=False**
+  (BẰNG baseline not_built, trước là 61.9% DƯỚI baseline).
+- validation: 29/44 = 65.9%, **built recall 0.083 → 0.25**, beats_majority=True.
+- ⇒ Khử nhiễu + căn lại cải thiện THẬT về hình học (sạch, đúng hướng, overlap cao
+  hơn) và về validation (built recall tăng), nhưng **test vẫn không phát hiện đúng
+  phần tử built nào** — accuracy chỉ bằng baseline đa số. Hạn chế cốt lõi (một quỹ
+  đạo drone, nhà trắng ít texture, occlusion phần tử built) còn nguyên; khử nhiễu
+  không tạo ra thông tin bị thiếu trong video.
+- Viewer DUSt3R rebuild bằng cloud sạch (58.216 điểm nhà sau downsample); badge +
+  bảng + README cập nhật nhất quán (66.7% = baseline, built 0/6). Không tune test.

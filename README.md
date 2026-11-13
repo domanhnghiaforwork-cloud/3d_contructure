@@ -9,13 +9,14 @@ phương pháp RAAMAC trên cohort nhãn độc lập đã đóng băng.
 | Nguồn cloud | Test acc | Built recall | Partial recall | Thắng baseline đa số (66.7%)? |
 |---|---|---|---|---|
 | Cloud chuyên nghiệp `week26.ply` | **20/21 = 95.24%** | 5/6 | 1/1 | **có** |
-| Video → DUSt3R (logwin, 113 frame@384) | 13/21 = 61.9% | 0/6 | 0/1 | không (dưới) |
+| Video → DUSt3R (khử nhiễu, 113 frame@384) | 14/21 = 66.7% | 0/6 | 0/1 | không (bằng) |
 | Video → MASt3R metric (57 frame@256) | 14/21 = 66.7% | 0/6 | 0/1 | không (bằng) |
 
 **Kết luận trung thực (đính chính):** mục tiêu ≥80% **chỉ đạt với cloud chuyên
 nghiệp** `week26.ply` (95.24%, phát hiện đúng 5/6 phần tử built). Với cloud **chỉ
 từ video**, cả DUSt3R lẫn MASt3R **không phát hiện đúng phần tử built nào (recall
-0/6)** và partial 0/1. Accuracy 61.9%/66.7% nghe có vẻ "đạt 50/60%" nhưng thực chất
+0/6)** và partial 0/1. Accuracy 66.7% (cả DUSt3R khử nhiễu lẫn MASt3R) nghe có vẻ
+"đạt 60%" nhưng thực chất
 **bằng hoặc dưới baseline đoán `not_built` hàng loạt** (66.7%, vì 14/21 nhãn test
 là not_built) — `beats_majority_baseline = false`. Nói cách khác, pipeline video
 **chưa thực sự phát hiện tiến độ thi công**; nó chỉ đoán gần như toàn bộ là
@@ -33,7 +34,7 @@ texture, video nén) khiến cloud dựng lại thiếu/rỗng ở các phần t
 Thư mục `viewer/` chứa viewer 3D **tự chứa** (không cần internet/CDN) để xem cloud
 video dựng lại đối chiếu BIM:
 - `viewer/index.html` — trang chọn kịch bản + bảng kết quả trung thực (per-class).
-- `viewer/dust3r.html` + `data_dust3r.js` — DUSt3R (test 61.9%, built recall 0/6).
+- `viewer/dust3r.html` + `data_dust3r.js` — DUSt3R khử nhiễu (test 66.7%, built recall 0/6).
 - `viewer/mast3r.html` + `data_mast3r.js` — MASt3R metric (test 66.7%, built recall 0/6).
 - `viewer/results/` — summary + metrics JSON từng kịch bản (gồm `beats_majority_baseline`,
   `per_class`, `confusion_matrix`).

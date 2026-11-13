@@ -1,20 +1,20 @@
 {
-  "evaluated_at_utc": "2026-11-13T04:56:39.990448+00:00",
+  "evaluated_at_utc": "2026-11-13T06:12:15.159427+00:00",
   "split": "test",
   "reference_sha256": "6cdde870dde51151c700743731b5131a58042dba61a8c0b68275c441cc77eb9d",
-  "predictions_sha256": "5ee0b7e9b3fb35071b81e762183de1320533ad9e02ee5327c2b335a8ffbe89e9",
+  "predictions_sha256": "faf311a08e432ce1e0499b348d081a13b4dda2d525b6d2e21eb98e880756e801",
   "label_sources": [
     "agent_visual_annotation_registered_scan_rgb_plus_dated_drone_video_week26_v1"
   ],
   "n_samples": 21,
-  "n_correct": 13,
-  "accuracy": 0.6190476190476191,
+  "n_correct": 14,
+  "accuracy": 0.6666666666666666,
   "accuracy_wilson_95_interval": [
-    0.4087865377511576,
-    0.7924898863143551
+    0.4537345197425524,
+    0.8280524739491653
   ],
   "interval_caveat": "Binomial interval; does not account for correlated elements within a site or scan.",
-  "macro_f1": 0.2626262626262626,
+  "macro_f1": 0.2745098039215686,
   "majority_class": "not_built",
   "majority_baseline_accuracy": 0.6666666666666666,
   "beats_majority_baseline": false,
@@ -37,9 +37,9 @@
       "support": 1.0
     },
     "not_built": {
-      "precision": 0.6842105263157895,
-      "recall": 0.9285714285714286,
-      "f1-score": 0.7878787878787878,
+      "precision": 0.7,
+      "recall": 1.0,
+      "f1-score": 0.8235294117647058,
       "support": 14.0
     }
   },
@@ -63,9 +63,9 @@
       0
     ],
     [
-      1,
       0,
-      13,
+      0,
+      14,
       0
     ],
     [
