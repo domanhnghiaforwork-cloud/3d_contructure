@@ -105,6 +105,23 @@ tự tải từ Hugging Face trên Colab khi chạy:
 - MASt3R metric: [`naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric`](https://huggingface.co/naver/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric) (~2.75 GB).
 - Code dựng: [`github.com/naver/dust3r`](https://github.com/naver/dust3r), [`github.com/naver/mast3r`](https://github.com/naver/mast3r) (tự clone trên Colab).
 
+### Tái tạo đăng ký week26.ply → IFC (G3, mỏ neo chuyên nghiệp)
+
+Toàn bộ code + artifact nhẹ của bước đăng ký đã commit (chỉ raw data tải riêng):
+- `register_cloud.py` — sinh G3: ICP trimmed đa khởi tạo (scale / yaw / z-offset)
+  giữa mẫu cloud chuyên nghiệp và mẫu bề mặt IFC → `candidate_transform.json`.
+- `verify_registration.py`, `test_registration.py`, `inspect_alignment.py` — kiểm chứng đăng ký.
+- `artifacts/week26_registration_v3/` — G3 đóng băng + `registration_inputs.npz`
+  (source/target) + `registration.json` (ghi ĐÚNG tham số đã dùng: scales, flip_z,
+  source_bounds, normal_frame, yaw_steps, z_offsets) + `candidate_alignment.png`.
+- `refine_registration.py` — ICP point-to-plane tinh chỉnh thêm (lợi ích không đáng
+  kể ~0.8°, xem research_log); kết quả ở `artifacts/week26_registration_refined/`.
+
+Tham số tái tạo G3 đọc từ `registration.json`; chạy `register_cloud.py --samples
+<inspection_samples.npz> --output <dir>` với các cờ tương ứng. Cloud chuyên nghiệp
+khung ref (`cloud_attributes.npz`) + G3 là mỏ neo để căn cloud video
+(`clean_align_dust3r.py`, `align_and_compare.py`).
+
 ## 3. Chuẩn bị frames từ video
 
 ```bash
