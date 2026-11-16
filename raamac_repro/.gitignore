@@ -1,0 +1,14 @@
+# Sản phẩm trung gian nặng — tự sinh lại khi chạy pipeline (không commit)
+artifacts/
+frames/
+__pycache__/
+*.pyc
+
+# Dữ liệu thô lớn — tải bằng download_data.sh
+data/raw/*
+!data/raw/.gitkeep
+data/videos/*
+!data/videos/.gitkeep
+
+# Log
+*.log

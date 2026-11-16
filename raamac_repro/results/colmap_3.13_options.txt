@@ -1,0 +1,265 @@
+E20261115 19:30:07.876770 136460147064832 colmap.cc:150] Command `--version` not recognized. To list the available commands, run `colmap help`.
+
+
+========== feature_extractor ==========
+I20261115 19:30:07.905012 135070063902720 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:07.905066 135070063902720 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --database_path arg
+  --image_path arg
+  --camera_mode arg (=-1)
+  --image_list_path arg
+  --descriptor_normalization arg (=l1_root)
+                                        {'l1_root', 'l2'}
+  --ImageReader.mask_path arg
+  --ImageReader.camera_model arg (=SIMPLE_RADIAL)
+  --ImageReader.single_camera arg (=0)
+  --ImageReader.single_camera_per_folder arg (=0)
+  --ImageReader.single_camera_per_image arg (=0)
+  --ImageReader.existing_camera_id arg (=-1)
+  --ImageReader.camera_params arg
+  --ImageReader.default_focal_length_factor arg (=1.2)
+  --ImageReader.camera_mask_path arg
+  --FeatureExtraction.type arg (=SIFT)
+  --FeatureExtraction.num_threads arg (=-1)
+  --FeatureExtraction.use_gpu arg (=1)
+  --FeatureExtraction.gpu_index arg (=-1)
+  --SiftExtraction.max_image_size arg (=3200)
+  --SiftExtraction.max_num_features arg (=8192)
+  --SiftExtraction.first_octave arg (=-1)
+  --SiftExtraction.num_octaves arg (=4)
+  --SiftExtraction.octave_resolution arg (=3)
+  --SiftExtraction.peak_threshold arg (=0.00667)
+  --SiftExtraction.edge_threshold arg (=10)
+  --SiftExtraction.estimate_affine_shape arg (=0)
+  --SiftExtraction.max_num_orientations arg (=2)
+  --SiftExtraction.upright arg (=0)
+  --SiftExtraction.domain_size_pooling arg (=0)
+  --SiftExtraction.dsp_min_scale arg (=0.167)
+  --SiftExtraction.dsp_max_scale arg (=3)
+  --SiftExtraction.dsp_num_scales arg (=10)
+
+
+========== sequential_matcher ==========
+I20261115 19:30:07.931420 132741858365440 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:07.931476 132741858365440 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --database_path arg
+  --FeatureMatching.type arg (=SIFT)
+  --FeatureMatching.num_threads arg (=-1)
+  --FeatureMatching.use_gpu arg (=1)
+  --FeatureMatching.gpu_index arg (=-1)
+  --FeatureMatching.guided_matching arg (=0)
+  --FeatureMatching.rig_verification arg (=0)
+  --FeatureMatching.max_num_matches arg (=32768)
+  --SiftMatching.max_ratio arg (=0.8)
+  --SiftMatching.max_distance arg (=0.7)
+  --SiftMatching.cross_check arg (=1)
+  --SiftMatching.cpu_brute_force_matcher arg (=0)
+  --TwoViewGeometry.min_num_inliers arg (=15)
+  --TwoViewGeometry.multiple_models arg (=0)
+  --TwoViewGeometry.compute_relative_pose arg (=0)
+  --TwoViewGeometry.detect_watermark arg (=1)
+  --TwoViewGeometry.multiple_ignore_watermark arg (=1)
+  --TwoViewGeometry.watermark_detection_max_error arg (=4)
+  --TwoViewGeometry.filter_stationary_matches arg (=0)
+  --TwoViewGeometry.stationary_matches_max_error arg (=4)
+  --TwoViewGeometry.max_error arg (=4)
+  --TwoViewGeometry.confidence arg (=0.999)
+  --TwoViewGeometry.max_num_trials arg (=10000)
+  --TwoViewGeometry.min_inlier_ratio arg (=0.25)
+  --TwoViewGeometry.random_seed arg (=-1)
+  --SequentialMatching.overlap arg (=10)
+  --SequentialMatching.quadratic_overlap arg (=1)
+  --SequentialMatching.expand_rig_images arg (=1)
+  --SequentialMatching.loop_detection arg (=0)
+  --SequentialMatching.loop_detection_period arg (=10)
+  --SequentialMatching.loop_detection_num_images arg (=50)
+  --SequentialMatching.loop_detection_num_nearest_neighbors arg (=1)
+  --SequentialMatching.loop_detection_num_checks arg (=64)
+  --SequentialMatching.loop_detection_num_images_after_verification arg (=0)
+  --SequentialMatching.loop_detection_max_num_features arg (=-1)
+  --SequentialMatching.vocab_tree_path arg (=https://github.com/colmap/colmap/releases/download/3.11.1/vocab_tree_faiss_flickr100K_words256K.bin;vocab_tree_faiss_flickr100K_words256K.bin;96ca8ec8ea60b1f73465aaf2c401fd3b3ca75cdba2d3c50d6a2f6f760f275ddc)
+  --SequentialMatching.num_threads arg (=-1)
+
+
+========== mapper ==========
+I20261115 19:30:07.957699 135343762894848 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:07.957762 135343762894848 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --database_path arg
+  --image_path arg
+  --input_path arg
+  --output_path arg
+  --Mapper.min_num_matches arg (=15)
+  --Mapper.ignore_watermarks arg (=0)
+  --Mapper.multiple_models arg (=1)
+  --Mapper.max_num_models arg (=50)
+  --Mapper.max_model_overlap arg (=20)
+  --Mapper.min_model_size arg (=10)
+  --Mapper.init_image_id1 arg (=-1)
+  --Mapper.init_image_id2 arg (=-1)
+  --Mapper.init_num_trials arg (=200)
+  --Mapper.extract_colors arg (=1)
+  --Mapper.num_threads arg (=-1)
+  --Mapper.random_seed arg (=-1)
+  --Mapper.min_focal_length_ratio arg (=0.1)
+  --Mapper.max_focal_length_ratio arg (=10)
+  --Mapper.max_extra_param arg (=1)
+  --Mapper.ba_refine_focal_length arg (=1)
+  --Mapper.ba_refine_principal_point arg (=0)
+  --Mapper.ba_refine_extra_params arg (=1)
+  --Mapper.ba_refine_sensor_from_rig arg (=1)
+  --Mapper.ba_local_function_tolerance arg (=0)
+  --Mapper.ba_local_max_num_iterations arg (=25)
+  --Mapper.ba_global_frames_ratio arg (=1.1)
+  --Mapper.ba_global_points_ratio arg (=1.1)
+  --Mapper.ba_global_frames_freq arg (=500)
+  --Mapper.ba_global_points_freq arg (=250000)
+  --Mapper.ba_global_function_tolerance arg (=0)
+  --Mapper.ba_global_max_num_iterations arg (=50)
+  --Mapper.ba_global_max_refinements arg (=5)
+  --Mapper.ba_global_max_refinement_change arg (=0.0005)
+  --Mapper.ba_local_max_refinements arg (=2)
+  --Mapper.ba_local_max_refinement_change arg (=0.001)
+  --Mapper.ba_use_gpu arg (=0)
+  --Mapper.ba_gpu_index arg (=-1)
+  --Mapper.ba_min_num_residuals_for_cpu_multi_threading arg (=50000)
+  --Mapper.snapshot_path arg
+  --Mapper.snapshot_frames_freq arg (=0)
+  --Mapper.fix_existing_frames arg (=0)
+  --Mapper.init_min_num_inliers arg (=100)
+  --Mapper.init_max_error arg (=4)
+  --Mapper.init_max_forward_motion arg (=0.95)
+  --Mapper.init_min_tri_angle arg (=16)
+  --Mapper.init_max_reg_trials arg (=2)
+  --Mapper.abs_pose_max_error arg (=12)
+  --Mapper.abs_pose_min_num_inliers arg (=30)
+  --Mapper.abs_pose_min_inlier_ratio arg (=0.25)
+  --Mapper.filter_max_reproj_error arg (=4)
+  --Mapper.filter_min_tri_angle arg (=1.5)
+  --Mapper.max_reg_trials arg (=3)
+  --Mapper.ba_local_num_images arg (=6)
+  --Mapper.ba_local_min_tri_angle arg (=6)
+  --Mapper.ba_global_ignore_redundant_points3D arg (=0)
+  --Mapper.ba_global_ignore_redundant_points3D_min_coverage_gain arg (=0.05)
+  --Mapper.image_list_path arg
+  --Mapper.constant_rig_list_path arg
+  --Mapper.constant_camera_list_path arg
+  --Mapper.max_runtime_seconds arg (=-1)
+  --Mapper.tri_max_transitivity arg (=1)
+  --Mapper.tri_create_max_angle_error arg (=2)
+  --Mapper.tri_continue_max_angle_error arg (=2)
+  --Mapper.tri_merge_max_reproj_error arg (=4)
+  --Mapper.tri_complete_max_reproj_error arg (=4)
+  --Mapper.tri_complete_max_transitivity arg (=5)
+  --Mapper.tri_re_max_angle_error arg (=5)
+  --Mapper.tri_re_min_ratio arg (=0.2)
+  --Mapper.tri_re_max_trials arg (=1)
+  --Mapper.tri_min_angle arg (=1.5)
+  --Mapper.tri_ignore_two_view_tracks arg (=1)
+
+
+========== image_undistorter ==========
+I20261115 19:30:07.983129 134352534044672 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:07.983178 134352534044672 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --image_path arg
+  --input_path arg
+  --output_path arg
+  --output_type arg (=COLMAP)           {COLMAP, PMVS, CMP-MVS}
+  --image_list_path arg
+  --copy_policy arg (=copy)             {copy, soft-link, hard-link}
+  --num_patch_match_src_images arg (=20)
+  --blank_pixels arg (=0)
+  --min_scale arg (=0.2)
+  --max_scale arg (=2)
+  --max_image_size arg (=-1)
+  --roi_min_x arg (=0)
+  --roi_min_y arg (=0)
+  --roi_max_x arg (=1)
+  --roi_max_y arg (=1)
+
+
+========== patch_match_stereo ==========
+I20261115 19:30:08.009936 132502100905984 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:08.009999 132502100905984 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --workspace_path arg                  Path to the folder containing the 
+                                        undistorted images
+  --workspace_format arg (=COLMAP)      {COLMAP, PMVS}
+  --pmvs_option_name arg (=option-all)
+  --config_path arg
+  --PatchMatchStereo.max_image_size arg (=-1)
+  --PatchMatchStereo.gpu_index arg (=-1)
+  --PatchMatchStereo.depth_min arg (=-1)
+  --PatchMatchStereo.depth_max arg (=-1)
+  --PatchMatchStereo.window_radius arg (=5)
+  --PatchMatchStereo.window_step arg (=1)
+  --PatchMatchStereo.sigma_spatial arg (=-1)
+  --PatchMatchStereo.sigma_color arg (=0.2)
+  --PatchMatchStereo.num_samples arg (=15)
+  --PatchMatchStereo.ncc_sigma arg (=0.6)
+  --PatchMatchStereo.min_triangulation_angle arg (=1)
+  --PatchMatchStereo.incident_angle_sigma arg (=0.9)
+  --PatchMatchStereo.num_iterations arg (=5)
+  --PatchMatchStereo.geom_consistency arg (=1)
+  --PatchMatchStereo.geom_consistency_regularizer arg (=0.3)
+  --PatchMatchStereo.geom_consistency_max_cost arg (=3)
+  --PatchMatchStereo.filter arg (=1)
+  --PatchMatchStereo.filter_min_ncc arg (=0.1)
+  --PatchMatchStereo.filter_min_triangulation_angle arg (=3)
+  --PatchMatchStereo.filter_min_num_consistent arg (=2)
+  --PatchMatchStereo.filter_geom_consistency_max_cost arg (=1)
+  --PatchMatchStereo.cache_size arg (=32)
+  --PatchMatchStereo.allow_missing_files arg (=0)
+  --PatchMatchStereo.write_consistency_graph arg (=0)
+
+
+========== stereo_fusion ==========
+I20261115 19:30:08.035428 136025465974784 option_manager.cc:937] COLMAP 3.13.0 (Commit Unknown on Unknown with CUDA)
+I20261115 19:30:08.035475 136025465974784 option_manager.cc:939] Options can either be specified via command-line or by defining them in a .ini project file passed to `--project_path`.
+  -h [ --help ] 
+  --default_random_seed arg (=0)
+  --log_to_stderr arg (=1)
+  --log_level arg (=0)
+  --project_path arg
+  --workspace_path arg
+  --workspace_format arg (=COLMAP)      {COLMAP, PMVS}
+  --pmvs_option_name arg (=option-all)
+  --input_type arg (=geometric)         {photometric, geometric}
+  --output_type arg (=PLY)              {BIN, TXT, PLY}
+  --output_path arg
+  --bbox_path arg
+  --StereoFusion.mask_path arg
+  --StereoFusion.num_threads arg (=-1)
+  --StereoFusion.max_image_size arg (=-1)
+  --StereoFusion.min_num_pixels arg (=5)
+  --StereoFusion.max_num_pixels arg (=10000)
+  --StereoFusion.max_traversal_depth arg (=100)
+  --StereoFusion.max_reproj_error arg (=2)
+  --StereoFusion.max_depth_error arg (=0.01)
+  --StereoFusion.max_normal_error arg (=10)
+  --StereoFusion.check_num_images arg (=50)
+  --StereoFusion.cache_size arg (=32)
+  --StereoFusion.use_cache arg (=0)

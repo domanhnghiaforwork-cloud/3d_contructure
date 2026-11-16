@@ -1,0 +1,46 @@
+{
+ "week": 26,
+ "alignment": {
+  "scale": 0.37839582794028553,
+  "chamfer_mean_m": 2.196969468031252,
+  "median_recon_to_ref_m": 0.17823259337002112,
+  "coverage_ref_at_0.2": 0.0797642288780145,
+  "n_recon": 419434
+ },
+ "cohort_eval_week26_reference": {
+  "validation": {
+   "accuracy": 0.6363636363636364,
+   "n_correct": 28,
+   "n_samples": 44,
+   "macro_f1": 0.30842490842490844,
+   "wilson95": [
+    0.4886637687904344,
+    0.762164702911798
+   ],
+   "majority_baseline_accuracy": 0.6363636363636364,
+   "beats_majority_baseline": false,
+   "built_recall": 0.08333333333333333,
+   "partial_recall": 0.0
+  },
+  "test": {
+   "accuracy": 0.6666666666666666,
+   "n_correct": 14,
+   "n_samples": 21,
+   "macro_f1": 0.2745098039215686,
+   "wilson95": [
+    0.4537345197425524,
+    0.8280524739491653
+   ],
+   "majority_baseline_accuracy": 0.6666666666666666,
+   "beats_majority_baseline": false,
+   "built_recall": 0.0,
+   "partial_recall": 0.0
+  }
+ },
+ "raamac_compare": {
+  "raamac_missing_total": 9,
+  "in_pipeline_scope": 2,
+  "out_of_scope": 7,
+  "in_scope_agree_not_built": 2
+ }
+}

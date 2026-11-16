@@ -1,0 +1,37 @@
+{
+ "26": {
+  "video": "week26.mp4",
+  "frames_kept": 268,
+  "source_fps": 25.0,
+  "target_fps": 5.0,
+  "min_sharpness": 200.0
+ },
+ "27": {
+  "video": "_FA_8JYWoYQ.mp4",
+  "frames_kept": 224,
+  "source_fps": 25.0,
+  "target_fps": 5.0,
+  "min_sharpness": 200.0
+ },
+ "28": {
+  "video": "gKLyBgRecLQ.mp4",
+  "frames_kept": 324,
+  "source_fps": 25.0,
+  "target_fps": 5.0,
+  "min_sharpness": 200.0
+ },
+ "29": {
+  "video": "0Pev1Weh6_I.mp4",
+  "frames_kept": 307,
+  "source_fps": 25.0,
+  "target_fps": 5.0,
+  "min_sharpness": 200.0
+ },
+ "30": {
+  "video": "QbBf31bY0xw.mp4",
+  "frames_kept": 272,
+  "source_fps": 25.0,
+  "target_fps": 5.0,
+  "min_sharpness": 200.0
+ }
+}
